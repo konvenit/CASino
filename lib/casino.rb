@@ -24,6 +24,9 @@ module CASino
     login_ticket: {
       lifetime: 600
     },
+    auth_token_ticket: {
+      lifetime: 60
+    },
     ticket_granting_ticket: {
       lifetime: 86400,
       lifetime_long_term: 864000

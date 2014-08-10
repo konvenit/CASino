@@ -1,0 +1,1 @@
+json.(@ticket, :ticket)
