@@ -24,15 +24,19 @@ class CASino::AuthTokenValidatorService
 
   private
   def signature_valid?
-    digest = OpenSSL::Digest::SHA256.new
-    Dir.glob(AUTH_TOKEN_SIGNERS_GLOB) do |file|
-      key = OpenSSL::PKey::RSA.new(File.read(file))
-      if key.verify(digest, signature, token)
-        Rails.logger.info("Successfully validated auth token signature with #{file}")
+    Dir.glob(AUTH_TOKEN_SIGNERS_GLOB) do |path|
+      if signature_valid_with_key?(path)
+        Rails.logger.info("Successfully validated auth token signature with #{path}")
         return true
       end
     end
     false
+  end
+
+  def signature_valid_with_key?(path)
+    digest = OpenSSL::Digest::SHA256.new
+    key = OpenSSL::PKey::RSA.new(File.read(path))
+    key.verify(digest, signature, token)
   end
 
   def ticket_valid?
