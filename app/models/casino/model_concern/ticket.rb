@@ -2,7 +2,19 @@ module CASino::ModelConcern::Ticket
   extend ActiveSupport::Concern
 
   included do
+    validates :ticket, uniqueness: true
     before_create :ensure_ticket_present
+    class_attribute :ticket_prefix, :ticket_lifetime
+  end
+
+  module ClassMethods
+    def cleanup
+      delete_all(['created_at < ?', ticket_lifetime.ago])
+    end
+  end
+
+  def to_s
+    ticket
   end
 
   private

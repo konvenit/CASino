@@ -17,6 +17,8 @@ CASino::Engine.routes.draw do
   get 'proxyValidate' => 'proxy_tickets#proxy_validate'
   get 'proxy' => 'proxy_tickets#create'
 
+  get 'authTokenLogin' => 'auth_tokens#login'
+
   root to: redirect('login')
 
   # The priority is based upon order of creation:

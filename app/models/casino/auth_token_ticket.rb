@@ -1,16 +1,8 @@
 class CASino::AuthTokenTicket < ActiveRecord::Base
   include CASino::ModelConcern::Ticket
-  validates :ticket, uniqueness: true
+  include CASino::ModelConcern::ConsumableTicket
 
-  def self.cleanup
-    self.delete_all(['created_at < ?', CASino.config.auth_token_ticket[:lifetime].seconds.ago])
-  end
+  self.ticket_prefix = 'ATT'.freeze
+  self.ticket_lifetime = CASino.config.auth_token_ticket[:lifetime].seconds
 
-  def self.ticket_prefix
-    'ATT'.freeze
-  end
-
-  def to_s
-    self.ticket
-  end
 end
