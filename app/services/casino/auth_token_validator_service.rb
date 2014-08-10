@@ -17,7 +17,7 @@ class CASino::AuthTokenValidatorService
   def token_data
     begin
       JSON.parse(token).symbolize_keys
-    rescue
+    rescue JSON::ParserError
       {}
     end
   end
