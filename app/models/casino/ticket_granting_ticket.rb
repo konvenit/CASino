@@ -54,4 +54,8 @@ class CASino::TicketGrantingTicket < ActiveRecord::Base
     end
     (Time.now - (self.created_at || Time.now)) > lifetime
   end
+
+  def password_expired?
+    user.extra_attributes[:password_expired]
+  end
 end
