@@ -15,10 +15,6 @@ class CASino::LoginCredentialAcceptorListener < CASino::Listener
     @controller.render 'validate_otp'
   end
 
-  def password_expired(ticket_granting_ticket, cookie_expiry_time = nil)
-    @controller.redirect_to "/password_updates/new?#{{ tgt: ticket_granting_ticket, expires: cookie_expiry_time, service: @controller.params[:service] }.to_query}"
-  end
-
   def invalid_login_credentials(login_ticket)
     @controller.flash.now[:error] = I18n.t('login_credential_acceptor.invalid_login_credentials')
     rerender_login_page(login_ticket)

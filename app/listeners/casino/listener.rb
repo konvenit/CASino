@@ -8,6 +8,10 @@ module CASino
       @controller = controller
     end
 
+    def password_expired(ticket_granting_ticket, cookie_expiry_time = nil)
+      @controller.redirect_to "/password_updates/new?#{{ tgt: ticket_granting_ticket, expires: cookie_expiry_time, service: @controller.params[:service] }.to_query}"
+    end
+
     protected
     def assign(name, value)
       @controller.instance_variable_set("@#{name}", value)

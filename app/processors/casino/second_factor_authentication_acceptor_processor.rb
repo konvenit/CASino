@@ -25,17 +25,26 @@ class CASino::SecondFactorAuthenticationAcceptorProcessor < CASino::Processor
       if validation_result.success?
         tgt.awaiting_two_factor_authentication = false
         tgt.save!
-        begin
-          url = unless params[:service].blank?
-            acquire_service_ticket(tgt, params[:service], true).service_with_ticket_url
-          end
+
+        if tgt.password_expired?
           if tgt.long_term?
-            @listener.user_logged_in(url, tgt.ticket, CASino.config.ticket_granting_ticket[:lifetime_long_term].seconds.from_now)
+            @listener.password_expired(tgt.ticket, CASino.config.ticket_granting_ticket[:lifetime_long_term].seconds.from_now)
           else
-            @listener.user_logged_in(url, tgt.ticket)
+            @listener.password_expired(tgt.ticket)
           end
-        rescue ServiceNotAllowedError => e
-          @listener.service_not_allowed(clean_service_url params[:service])
+        else
+          begin
+            url = unless params[:service].blank?
+                    acquire_service_ticket(tgt, params[:service], true).service_with_ticket_url
+                  end
+            if tgt.long_term?
+              @listener.user_logged_in(url, tgt.ticket, CASino.config.ticket_granting_ticket[:lifetime_long_term].seconds.from_now)
+            else
+              @listener.user_logged_in(url, tgt.ticket)
+            end
+          rescue ServiceNotAllowedError => e
+            @listener.service_not_allowed(clean_service_url params[:service])
+          end
         end
       else
         @listener.invalid_one_time_password
