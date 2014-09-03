@@ -4,6 +4,9 @@ CASino::Engine.routes.draw do
 
   get 'login' => 'sessions#new'
   post 'login' => 'sessions#create'
+  get 'loginTicket' => 'sessions#new_ticket'
+  post 'loginTicket' => 'sessions#new_ticket'
+
   get 'logout' => 'sessions#logout'
   post 'validate_otp' => 'sessions#validate_otp'
 
