@@ -43,7 +43,7 @@ module CASino
           ValidationResult.new 'INVALID_TICKET', "Ticket '#{ticket.ticket}' already consumed", :warn
         elsif ticket.expired?
           ValidationResult.new 'INVALID_TICKET', "Ticket '#{ticket.ticket}' has expired", :warn
-        elsif service != ticket.service
+        elsif service != clean_service_url(ticket.service)
           ValidationResult.new 'INVALID_SERVICE', "Ticket '#{ticket.ticket}' is not valid for service '#{service}'", :warn
         elsif renew && !ticket.issued_from_credentials?
           ValidationResult.new 'INVALID_TICKET', "Ticket '#{ticket.ticket}' was not issued from credentials but service '#{service}' will only accept a renewed ticket", :info
