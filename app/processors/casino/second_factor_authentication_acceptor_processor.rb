@@ -42,7 +42,7 @@ class CASino::SecondFactorAuthenticationAcceptorProcessor < CASino::Processor
             else
               @listener.user_logged_in(url, tgt.ticket)
             end
-          rescue ServiceNotAllowedError => e
+          rescue ::CASino::ProcessorConcern::ServiceTickets::ServiceNotAllowedError => e
             @listener.service_not_allowed(clean_service_url params[:service])
           end
         end
