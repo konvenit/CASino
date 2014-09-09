@@ -36,9 +36,7 @@ module CASino
 
       private
       def validate_existing_ticket_for_service(ticket, service, renew = false)
-        if ticket.is_a?(CASino::ServiceTicket)
-          service = clean_service_url(service)
-        end
+        service = clean_service_url(service)
         if ticket.consumed?
           ValidationResult.new 'INVALID_TICKET', "Ticket '#{ticket.ticket}' already consumed", :warn
         elsif ticket.expired?
