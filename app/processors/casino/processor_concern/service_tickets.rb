@@ -19,6 +19,10 @@ module CASino
         end
 Rails.logger.info "creating a new service ticket for #{service_url}"
 
+        # DIRTY HACK
+        service_url = service_url.sub('.html', '')
+
+
         service_tickets = ticket_granting_ticket.service_tickets
         service_tickets.where(service: service_url).destroy_all
         service_tickets.create!({
