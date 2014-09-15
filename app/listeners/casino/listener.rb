@@ -8,8 +8,13 @@ module CASino
       @controller = controller
     end
 
-    def password_expired(ticket_granting_ticket, cookie_expiry_time = nil)
-      @controller.redirect_to "/password_updates/new?#{{ tgt: ticket_granting_ticket, expires: cookie_expiry_time, service: @controller.params[:service] }.to_query}"
+    def password_expired(url, ticket_granting_ticket, cookie_expiry_time = nil)
+      if @controller.password_expiration_enabled?
+        @controller.redirect_to "/password_updates/new?#{{ tgt: ticket_granting_ticket, expires: cookie_expiry_time, service: @controller.params[:service] }.to_query}"
+      else
+        @controller.prolong_expiration_period ticket_granting_ticket
+        user_logged_in url, ticket_granting_ticket, cookie_expiry_time
+      end
     end
 
     protected

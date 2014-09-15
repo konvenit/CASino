@@ -46,21 +46,24 @@ class CASino::LoginCredentialAcceptorProcessor < CASino::Processor
 
     if ticket_granting_ticket.awaiting_two_factor_authentication?
       @listener.two_factor_authentication_pending(ticket_granting_ticket.ticket)
-    elsif ticket_granting_ticket.password_expired?
-      if long_term
-        @listener.password_expired(ticket_granting_ticket.ticket, CASino.config.ticket_granting_ticket[:lifetime_long_term].seconds.from_now)
-      else
-        @listener.password_expired(ticket_granting_ticket.ticket)
-      end
     else
       begin
         url = unless @params[:service].blank?
           acquire_service_ticket(ticket_granting_ticket, @params[:service], true).service_with_ticket_url
         end
-        if long_term
-          @listener.user_logged_in(url, ticket_granting_ticket.ticket, CASino.config.ticket_granting_ticket[:lifetime_long_term].seconds.from_now)
+
+        if ticket_granting_ticket.password_expired?
+          if long_term
+            @listener.password_expired(url, ticket_granting_ticket.ticket, CASino.config.ticket_granting_ticket[:lifetime_long_term].seconds.from_now)
+          else
+            @listener.password_expired(url, ticket_granting_ticket.ticket)
+          end
         else
-          @listener.user_logged_in(url, ticket_granting_ticket.ticket)
+          if long_term
+            @listener.user_logged_in(url, ticket_granting_ticket.ticket, CASino.config.ticket_granting_ticket[:lifetime_long_term].seconds.from_now)
+          else
+            @listener.user_logged_in(url, ticket_granting_ticket.ticket)
+          end
         end
       rescue CASino::ProcessorConcern::ServiceTickets::ServiceNotAllowedError => e
         @listener.service_not_allowed(clean_service_url @params[:service])
