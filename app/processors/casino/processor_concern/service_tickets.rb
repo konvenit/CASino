@@ -17,11 +17,8 @@ module CASino
           Rails.logger.error message
           raise ServiceNotAllowedError, message
         end
-Rails.logger.info "creating a new service ticket for #{service_url}"
 
-        # DIRTY HACK
-        service_url = service_url.sub('.html', '')
-
+        Rails.logger.info "creating a new service ticket for #{service_url}"
 
         service_tickets = ticket_granting_ticket.service_tickets
         service_tickets.where(service: service_url).destroy_all
@@ -42,7 +39,7 @@ Rails.logger.info "creating a new service ticket for #{service_url}"
           service_uri.query_values = nil
         end
 
-        service_uri.path = (service_uri.path || '').gsub(/\/+\z/, '')
+        service_uri.path = (service_uri.path || '').gsub(/\/+\z/, '').sub('.html', '') # IE hack
         service_uri.path = '/' if service_uri.path.blank?
         clean_service = service_uri.normalize.to_s
 
