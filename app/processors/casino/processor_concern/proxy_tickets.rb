@@ -4,6 +4,7 @@ module CASino
 
       include CASino::ProcessorConcern::Tickets
 
+      CASino::ProcessorConcern::ProxyTickets.send(:remove_const, :ValidationResult) if defined?(CASino::ProcessorConcern::ProxyTickets::ValidationResult)
       class ValidationResult < CASino::ValidationResult; end
 
       def acquire_proxy_ticket(proxy_granting_ticket, service)

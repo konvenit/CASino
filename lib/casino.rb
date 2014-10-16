@@ -1,6 +1,53 @@
 require 'active_support/configurable'
 require 'casino/engine'
 
+# resque incompatibility workaround
+class ApplicationController < ActionController::Base
+
+end
+
+module CASino
+  module Api
+    module V1
+
+    end
+  end
+
+  module API
+
+  end
+end
+
+def current_path
+  File.dirname(__FILE__)
+end
+
+# remove .rb extension and require
+def include_file(name)
+  name = name.sub(current_path, '')
+  require File.join(current_path, File.dirname(name), File.basename(name, '.rb'))
+end
+
+Dir.glob(File.join(current_path, '../app/helpers', '**/*.rb')).sort.each do |file|
+  include_file file
+end
+
+include_file File.join(current_path, '../app/models/casino/validation_result')
+
+include_file File.join(current_path, '../app/processors/casino/processor_concern/tickets')
+include_file File.join(current_path, '../app/processors/casino/processor_concern/proxy_tickets')
+include_file File.join(current_path, '../app/processors/casino/processor_concern/service_tickets')
+
+Dir.glob(File.join(current_path, '../app/processors/casino/processor_concern', '**/*.rb')).sort.each do |file|
+  include_file file
+end
+
+include_file File.join(current_path, '../app/processors/casino/processor')
+include_file File.join(current_path, '../app/processors/casino/service_ticket_validator_processor')
+
+include_file File.join(current_path, '../app/controllers/casino/application_controller')
+# end resque incompatibility workaround
+
 module CASino
   include ActiveSupport::Configurable
 

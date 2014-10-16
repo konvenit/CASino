@@ -4,6 +4,8 @@ require 'rotp'
 module CASino
   module ProcessorConcern
     module TwoFactorAuthenticators
+      CASino::ProcessorConcern::TwoFactorAuthenticators.send(:remove_const, :ValidationResult) if defined?(CASino::ProcessorConcern::TwoFactorAuthenticators::ValidationResult)
+
       class ValidationResult < CASino::ValidationResult; end
 
       def validate_one_time_password(otp, authenticator)
