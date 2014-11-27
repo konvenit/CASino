@@ -26,6 +26,7 @@ class CASino::LoginCredentialAcceptorProcessor < CASino::Processor
     if login_ticket_valid?(@params[:lt])
       authenticate_user
     else
+      Rails.logger.error "LoginCredentialAcceptorProcessor: login ticket is invalid #{@params[:lt]}"
       @listener.invalid_login_ticket(acquire_login_ticket)
     end
   end
@@ -36,6 +37,7 @@ class CASino::LoginCredentialAcceptorProcessor < CASino::Processor
     if !authentication_result.nil?
       user_logged_in(authentication_result)
     else
+      Rails.logger.error "LoginCredentialAcceptorProcessor: invalid login credential"
       @listener.invalid_login_credentials(acquire_login_ticket)
     end
   end
@@ -65,7 +67,7 @@ class CASino::LoginCredentialAcceptorProcessor < CASino::Processor
             @listener.user_logged_in(url, ticket_granting_ticket.ticket)
           end
         end
-      rescue CASino::ProcessorConcern::ServiceTickets::ServiceNotAllowedError => e
+      rescue CASino::ProcessorConcern::ServiceTickets::ServiceNotAllowedError
         @listener.service_not_allowed(clean_service_url @params[:service])
       end
     end
