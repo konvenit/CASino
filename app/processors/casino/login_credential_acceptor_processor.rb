@@ -46,7 +46,7 @@ class CASino::LoginCredentialAcceptorProcessor < CASino::Processor
     long_term = @params[:rememberMe]
     ticket_granting_ticket = acquire_ticket_granting_ticket(authentication_result, @user_agent, long_term)
 
-    if ticket_granting_ticket.awaiting_two_factor_authentication? and !ticket_granting_ticket.password_expired?
+    if ticket_granting_ticket.awaiting_two_factor_authentication? and !ticket_granting_ticket.password_expired? and !(@listener.respond_to?(:disable_two_factor_auth?) and @listener.disable_two_factor_auth?)
       @listener.two_factor_authentication_pending(ticket_granting_ticket.ticket)
     else
       begin
