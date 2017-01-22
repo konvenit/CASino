@@ -4,7 +4,7 @@ class CASino::LoginCredentialAcceptorListener < CASino::Listener
   attr_reader :controller
 
   def user_logged_in(url, ticket_granting_ticket, cookie_expiry_time = nil)
-    @controller.cookies[:tgt] = { value: ticket_granting_ticket, expires: cookie_expiry_time }
+    @controller.cookies[:tgt] = { value: ticket_granting_ticket, expires: cookie_expiry_time, httponly: true }
     if url.nil?
       @controller.redirect_to sessions_path, status: :see_other
     else
