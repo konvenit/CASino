@@ -34,7 +34,8 @@ class CASino::LoginCredentialRequestorProcessor < CASino::Processor
   end
 
   def handle_logged_in
-    if @listener.method(:user_logged_in).arity > 1
+    arity = @listener.method(:user_logged_in).arity
+    if arity > 1 or arity == -3
       @listener.user_logged_in(@params[:service], @ticket_granting_ticket)
     else
       service_url_with_ticket = (acquire_service_ticket(@ticket_granting_ticket, @params[:service], true).service_with_ticket_url if @params[:service])
