@@ -8,6 +8,7 @@ class CASino::SessionsController < CASino::ApplicationController
 
   def new
     processor(:LoginCredentialRequestor).process(params, cookies, request.user_agent)
+    head :not_acceptable unless performed?
   end
 
   def new_ticket
