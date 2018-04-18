@@ -1,6 +1,5 @@
 
 class CASino::TwoFactorAuthenticator < ActiveRecord::Base
-  attr_accessible :secret
 
   belongs_to :user
 
