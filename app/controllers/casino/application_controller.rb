@@ -5,7 +5,7 @@ class CASino::ApplicationController < ::ApplicationController
   include ApplicationHelper
 
   layout 'application'
-  before_filter :set_locale
+  before_action :set_locale
 
   def cookies
     super
