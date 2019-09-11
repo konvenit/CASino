@@ -6,6 +6,7 @@ module CASino
 
   defaults = {
     authenticators: HashWithIndifferentAccess.new,
+    require_service_rules: false,
     logger: Rails.logger,
     frontend: HashWithIndifferentAccess.new(
       sso_name: 'CASino',
@@ -21,6 +22,9 @@ module CASino
       two_factor_authenticator: nil,
       user: nil
     ),
+    auth_token_ticket: {
+      lifetime: 60
+    },
     login_ticket: {
       lifetime: 600
     },

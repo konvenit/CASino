@@ -1,10 +1,15 @@
 require 'user_agent'
 
 class CASino::TicketGrantingTicket < ActiveRecord::Base
-  validates :ticket, uniqueness: true
+  include CASino::ModelConcern::Ticket
+  include CASino::ModelConcern::BrowserInfo
+
+  self.ticket_prefix = 'TGC'.freeze
 
   belongs_to :user
   has_many :service_tickets, dependent: :destroy
+
+  scope :active, -> { where(awaiting_two_factor_authentication: false).order('updated_at DESC') }
 
   def self.cleanup(user = nil)
     if user.nil?
@@ -22,17 +27,6 @@ class CASino::TicketGrantingTicket < ActiveRecord::Base
     ])
     CASino::ServiceTicket.where(ticket_granting_ticket_id: tgts).destroy_all
     tgts.destroy_all
-  end
-
-  def browser_info
-    unless self.user_agent.blank?
-      user_agent = UserAgent.parse(self.user_agent)
-      if user_agent.platform.nil?
-        "#{user_agent.browser}"
-      else
-        "#{user_agent.browser} (#{user_agent.platform})"
-      end
-    end
   end
 
   def same_user?(other_ticket)
