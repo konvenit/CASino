@@ -1,6 +1,5 @@
 
 class CASino::TwoFactorAuthenticator < ActiveRecord::Base
-
   belongs_to :user
 
   def self.cleanup
