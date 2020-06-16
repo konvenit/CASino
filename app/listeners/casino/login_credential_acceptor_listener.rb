@@ -1,8 +1,10 @@
 require_relative 'listener'
 
 class CASino::LoginCredentialAcceptorListener < CASino::Listener
+  attr_reader :controller
+
   def user_logged_in(url, ticket_granting_ticket, cookie_expiry_time = nil)
-    @controller.cookies[:tgt] = { value: ticket_granting_ticket, expires: cookie_expiry_time }
+    @controller.cookies[:tgt] = { value: ticket_granting_ticket, expires: cookie_expiry_time, httponly: true, secure: true }
     if url.nil?
       @controller.redirect_to sessions_path, status: :see_other
     else
@@ -16,16 +18,19 @@ class CASino::LoginCredentialAcceptorListener < CASino::Listener
   end
 
   def invalid_login_credentials(login_ticket)
-    @controller.flash.now[:error] = I18n.t('login_credential_acceptor.invalid_login_credentials')
+    Rails.logger.error I18n.t('login_credential_acceptor.invalid_login_credentials')
+    @controller.flash.now[:error] = I18n.t('login_credential_acceptor.invalid_login_credentials') if @controller.flash.blank?
     rerender_login_page(login_ticket)
   end
 
   def invalid_login_ticket(login_ticket)
+    Rails.logger.error I18n.t('login_credential_acceptor.invalid_login_ticket')
     @controller.flash.now[:error] = I18n.t('login_credential_acceptor.invalid_login_ticket')
     rerender_login_page(login_ticket)
   end
 
   def service_not_allowed(service)
+     Rails.logger.error  "service not allowed: #{service}"
     assign(:service, service)
     @controller.render 'service_not_allowed', status: 403
   end

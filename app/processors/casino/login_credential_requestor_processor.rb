@@ -39,10 +39,13 @@ class CASino::LoginCredentialRequestorProcessor < CASino::Processor
   end
 
   def handle_logged_in
-    service_url_with_ticket = unless @service_url.nil?
-      acquire_service_ticket(@ticket_granting_ticket, @service_url, true).service_with_ticket_url
+    arity = @listener.method(:user_logged_in).arity
+    if arity.abs > 1
+      @listener.user_logged_in(@params[:service], @ticket_granting_ticket)
+    else
+      service_url_with_ticket = (acquire_service_ticket(@ticket_granting_ticket, @params[:service], true).service_with_ticket_url if @params[:service])
+      @listener.user_logged_in(service_url_with_ticket)
     end
-    @listener.user_logged_in(service_url_with_ticket)
   end
 
   def handle_not_logged_in

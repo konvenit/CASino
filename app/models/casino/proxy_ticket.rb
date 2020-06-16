@@ -1,7 +1,7 @@
 require 'addressable/uri'
 
 class CASino::ProxyTicket < ActiveRecord::Base
-  validates :ticket, uniqueness: true
+  validates :ticket, uniqueness: { case_sensitive: true }
   belongs_to :proxy_granting_ticket
   has_many :proxy_granting_tickets, as: :granter, dependent: :destroy
 
