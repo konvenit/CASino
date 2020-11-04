@@ -4,7 +4,7 @@ describe CASino::LegacyValidatorListener do
   let(:controller) { Object.new }
   let(:listener) { described_class.new(controller) }
   let(:response_text) { "foobar\nbla\n" }
-  let(:render_parameters) { { text: response_text, content_type: 'text/plain' } }
+  let(:render_parameters) { { body: response_text, content_type: 'text/plain' } }
 
   describe '#validation_succeeded' do
     it 'tells the controller to render the response text' do
