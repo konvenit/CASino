@@ -7,7 +7,7 @@ class CASino::ServiceTicket < ActiveRecord::Base
   has_many :proxy_granting_tickets, as: :granter, dependent: :destroy
 
   def self.cleanup_unconsumed
-    where('created_at < ? AND consumed = ?', CASino.config.service_ticket[:lifetime_unconsumed].seconds.ago, false)
+    where('created_at < ? AND consumed = ?', CASino.config.service_ticket[:lifetime_unconsumed].seconds.ago, false).delete_all
   end
 
   def self.cleanup_consumed
@@ -15,7 +15,7 @@ class CASino::ServiceTicket < ActiveRecord::Base
   end
 
   def self.cleanup_consumed_hard
-    where('created_at < ? AND consumed = ?', (CASino.config.service_ticket[:lifetime_consumed].seconds * 2).ago, true).destroy_all
+    where('created_at < ? AND consumed = ?', (CASino.config.service_ticket[:lifetime_consumed].seconds * 2).ago, true).delete_all
   end
 
 
