@@ -1,3 +1,5 @@
+require "casino/authenticator"
+
 module CASino
   module ProcessorConcern
     module Authentication
@@ -6,6 +8,7 @@ module CASino
         authentication_result = nil
         authenticators.each do |authenticator_name, authenticator|
           begin
+            authenticator.controller = (@listener.respond_to?(:controller) ? @listener.controller : @listener) if authenticator.respond_to?(:controller)
             data = authenticator.validate(username, password)
           rescue CASino::Authenticator::AuthenticatorError => e
             Rails.logger.error "Authenticator '#{authenticator_name}' (#{authenticator.class}) raised an error: #{e}"

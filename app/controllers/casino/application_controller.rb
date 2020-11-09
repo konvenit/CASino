@@ -22,8 +22,18 @@ class CASino::ApplicationController < ::ApplicationController
     @processor = CASino.const_get(:"#{processor_name}Processor").new(listener)
   end
 
+  def available_locale
+    ['de','en']
+  end
+
   def set_locale
-    I18n.locale = extract_locale_from_accept_language_header || I18n.default_locale
+    locale = if params[:service] and params[:service].match(/.*[?&]locale=([^&]+)(&|$)/)
+               result = params[:service].match(/.*[?&]locale=([^&]+)(&|$)/)
+               result[1]
+             elsif request.env['HTTP_ACCEPT_LANGUAGE']
+               http_accept_language.preferred_language_from(I18n.available_locales)
+             end
+    I18n.locale = available_locale.include?(locale) ? locale : I18n.default_locale
   end
 
   def extract_locale_from_accept_language_header

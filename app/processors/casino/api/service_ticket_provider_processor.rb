@@ -36,7 +36,7 @@ class CASino::API::ServiceTicketProviderProcessor < CASino::Processor
       begin
         create_service_ticket
         callback_granted_service_ticket
-      rescue ServiceNotAllowedError
+      rescue ::CASino::ProcessorConcern::ServiceTickets::ServiceNotAllowedError
         callback_service_not_allowed
       end
     when (@service_url and not @ticket_granting_ticket)

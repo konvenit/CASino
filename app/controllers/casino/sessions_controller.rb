@@ -10,6 +10,11 @@ class CASino::SessionsController < CASino::ApplicationController
     processor(:LoginCredentialRequestor).process(params, cookies, request.user_agent)
   end
 
+  def new_ticket
+    new
+    render :text => @login_ticket.ticket
+  end
+
   def create
     processor(:LoginCredentialAcceptor).process(params, request.user_agent)
   end
