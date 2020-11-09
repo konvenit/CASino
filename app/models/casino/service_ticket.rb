@@ -20,12 +20,14 @@ class CASino::ServiceTicket < ActiveRecord::Base
 
 
   def service=(service)
-    normalized_encoded_service = Addressable::URI.parse(service).normalize.to_str
+    normalized_encoded_service = Addressable::URI.parse(service)&.normalize&.to_str || ''
     super(normalized_encoded_service)
   end
 
 
   def service_with_ticket_url
+    return if service.blank?
+
     service_uri = Addressable::URI.parse(self.service)
     service_uri.query_values = (service_uri.query_values(Array) || []) << ['ticket', self.ticket]
     service_uri.to_s

@@ -35,7 +35,7 @@ describe CASino::SecondFactorAuthenticationAcceptorListener do
 
       it 'creates the tgt cookie' do
         listener.user_logged_in(url, ticket_granting_ticket)
-        controller.cookies[:tgt].should == { value: ticket_granting_ticket, expires: nil }
+        controller.cookies[:tgt].should == { value: ticket_granting_ticket, expires: nil, httponly: true }
       end
     end
   end

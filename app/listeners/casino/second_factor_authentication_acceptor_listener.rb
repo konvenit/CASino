@@ -7,7 +7,10 @@ class CASino::SecondFactorAuthenticationAcceptorListener < CASino::Listener
   end
 
   def user_logged_in(url, ticket_granting_ticket, cookie_expiry_time = nil)
-    @controller.cookies[:tgt] = { value: ticket_granting_ticket, expires: cookie_expiry_time, httponly: true, secure: true }
+    tgt_cookie = { value: ticket_granting_ticket, expires: cookie_expiry_time, httponly: true }
+    tgt_cookie[:secure] = true unless Rails.env.test?
+
+    @controller.cookies[:tgt] = tgt_cookie
     if url.nil?
       @controller.redirect_to sessions_path, status: :see_other
     else
