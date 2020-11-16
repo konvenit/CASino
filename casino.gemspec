@@ -27,6 +27,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rake', '>= 10.0'
   s.add_development_dependency 'rspec', '>= 2.12'
   s.add_development_dependency 'rspec-rails', '>= 2.0'
+  s.add_development_dependency 'rspec-its'
   s.add_development_dependency 'sqlite3', '>= 1.3'
   s.add_development_dependency 'factory_girl', '>= 4.1'
   s.add_development_dependency 'webmock', '>= 1.9'
@@ -39,4 +40,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'useragent', '>= 0.4'
   s.add_runtime_dependency 'faraday', '>= 0.8'
   s.add_runtime_dependency 'rotp', '>= 1.4'
+
+  s.add_dependency 'sass-rails'
 end

@@ -1,7 +1,7 @@
 de:
   login_credential_acceptor:
     invalid_login_ticket: "Ihre Anfrage enthielt kein gültiges Login-Ticket."
-    invalid_login_credentials: "Benutzername oder Passwort falsch."
+    invalid_login_credentials: "Falscher Benutzername oder falsches Passwort, oder Ihr Konto wurde gesperrt, nachdem zu oft ein falsches Passwort eingegeben wurde."
   login:
     label_username: "Benutzername"
     label_password: "Passwort"

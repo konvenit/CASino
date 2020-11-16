@@ -41,7 +41,12 @@ module CASino
 
         service_uri.path = (service_uri.path || '').gsub(/\/+\z/, '').sub('.html', '') # IE hack
         service_uri.path = '/' if service_uri.path.blank?
-        clean_service = service_uri.normalize.to_s
+
+        clean_service = begin
+                        service_uri.normalize.to_s
+                      rescue Addressable::URI::InvalidURIError
+                        nil
+                      end
 
         Rails.logger.debug("Cleaned dirty service URL '#{dirty_service}' to '#{clean_service}'") if dirty_service != clean_service
 

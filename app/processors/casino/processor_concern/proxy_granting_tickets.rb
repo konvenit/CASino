@@ -34,7 +34,7 @@ module CASino
           Rails.logger.warn "Proxy-granting ticket callback server responded with a bad result code '#{response.status}'. PGT will not be stored."
           nil
         end
-      rescue Faraday::Error::ClientError => error
+      rescue Faraday::Error => error
         Rails.logger.warn "Exception while communicating with proxy-granting ticket callback server: #{error.message}"
         nil
       end

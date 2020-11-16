@@ -5,7 +5,7 @@ describe 'Login' do
 
   subject { page }
 
-  context 'with two-factor authentication enabled' do
+  xcontext 'with two-factor authentication enabled' do
     before do
       in_browser(:other) do
         sign_in
