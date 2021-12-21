@@ -8,8 +8,7 @@ class CASino::SecondFactorAuthenticationAcceptorListener < CASino::Listener
 
   def user_logged_in(url, ticket_granting_ticket, cookie_expiry_time = nil)
     tgt_cookie = { value: ticket_granting_ticket, expires: cookie_expiry_time, httponly: true }
-    # TODO
-    # tgt_cookie[:secure] = true unless Rails.env.test?
+    tgt_cookie[:secure] = ENV.fetch("SECURE_COOKIES", true).to_bool unless Rails.env.test?
 
     @controller.cookies[:tgt] = tgt_cookie
     if url.nil?
