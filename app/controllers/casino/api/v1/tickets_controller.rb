@@ -1,4 +1,4 @@
-class CASino::Api::V1::TicketsController < CASino::ApplicationController
+class CASino::API::V1::TicketsController < CASino::ApplicationController
 
   # POST /cas/v1/tickets
   def create
@@ -50,6 +50,3 @@ class CASino::Api::V1::TicketsController < CASino::ApplicationController
   end
 
 end
-
-# Inflector alias
-CASino::API = CASino::Api
