@@ -1,7 +1,7 @@
 
 class CASino::ServiceRule < ActiveRecord::Base
   validates :name, presence: true
-  validates :url, uniqueness: true, presence: true
+  validates :url, uniqueness: { case_sensitive: true }, presence: true
 
   def self.allowed?(service_url)
     rules = self.where(enabled: true)

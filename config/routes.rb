@@ -1,9 +1,11 @@
 CASino::Engine.routes.draw do
   resources :sessions, only: [:index, :destroy]
-  resources :two_factor_authenticators, only: [:new, :create, :destroy]
 
   get 'login' => 'sessions#new'
   post 'login' => 'sessions#create'
+  get 'loginTicket' => 'sessions#new_ticket'
+  post 'loginTicket' => 'sessions#new_ticket'
+
   get 'logout' => 'sessions#logout'
   post 'validate_otp' => 'sessions#validate_otp'
 

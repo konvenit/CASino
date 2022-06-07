@@ -1,35 +1,30 @@
 require 'spec_helper'
 
 describe CASino::SessionsController do
+  routes { CASino::Engine.routes }
+
   describe 'GET "new"' do
     it 'calls the process method of the LoginCredentialRequestor' do
       CASino::LoginCredentialRequestorProcessor.any_instance.should_receive(:process)
-      get :new, use_route: :casino
-    end
-
-    context 'with an unsupported format' do
-      it 'sets the status code to 406' do
-        get :new, use_route: :casino, format: :xml
-        response.status.should == 406
-      end
+      get :new
     end
   end
 
   describe 'POST "create"' do
     it 'calls the process method of the LoginCredentialAcceptor' do
       CASino::LoginCredentialAcceptorProcessor.any_instance.should_receive(:process) do
-        @controller.render nothing: true
+        @controller.render body: nil
       end
-      post :create, use_route: :casino
+      post :create
     end
   end
 
   describe 'POST "validate_otp"' do
     it 'calls the process method of the SecondFactorAuthenticatonAcceptor' do
       CASino::SecondFactorAuthenticationAcceptorProcessor.any_instance.should_receive(:process) do
-        @controller.render nothing: true
+        @controller.render body: nil
       end
-      post :validate_otp, use_route: :casino
+      post :validate_otp
     end
   end
 
@@ -40,7 +35,7 @@ describe CASino::SessionsController do
         cookies.should == controller.cookies
         user_agent.should == request.user_agent
       end
-      get :logout, use_route: :casino
+      get :logout
     end
   end
 
@@ -48,7 +43,7 @@ describe CASino::SessionsController do
     it 'calls the process method of the SessionOverview processor' do
       CASino::TwoFactorAuthenticatorOverviewProcessor.any_instance.should_receive(:process)
       CASino::SessionOverviewProcessor.any_instance.should_receive(:process)
-      get :index, use_route: :casino
+      get :index
     end
   end
 
@@ -61,18 +56,18 @@ describe CASino::SessionsController do
         params[:id].should == id
         cookies[:tgt].should == tgt
         user_agent.should == request.user_agent
-        @controller.render nothing: true
+        @controller.render body: nil
       end
-      delete :destroy, id:id, use_route: :casino
+      delete :destroy, params: { id: id }
     end
   end
 
   describe 'GET "destroy_others"' do
     it 'calls the process method of the OtherSessionsDestroyer' do
       CASino::OtherSessionsDestroyerProcessor.any_instance.should_receive(:process) do
-        @controller.render nothing: true
+        @controller.render body: nil
       end
-      get :destroy_others, use_route: :casino
+      get :destroy_others
     end
   end
 end

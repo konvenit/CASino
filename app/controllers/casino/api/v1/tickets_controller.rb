@@ -17,7 +17,7 @@ class CASino::API::V1::TicketsController < CASino::ApplicationController
 
   # callbacks
   def user_logged_in_via_api(ticket_granting_ticket)
-    render nothing: true, status: 201, location: api_v1_ticket_url(ticket_granting_ticket)
+    render body: nil, status: 201, location: api_v1_ticket_url(ticket_granting_ticket)
   end
 
   def invalid_login_credentials_via_api
@@ -25,7 +25,7 @@ class CASino::API::V1::TicketsController < CASino::ApplicationController
   end
 
   def granted_service_ticket_via_api(service_ticket)
-    render text: service_ticket, status: 200, content_type: Mime::TEXT
+    render body: service_ticket, status: 200, content_type: 'text/plain'
   end
 
   def invalid_ticket_granting_ticket_via_api
@@ -41,12 +41,12 @@ class CASino::API::V1::TicketsController < CASino::ApplicationController
   end
 
   def user_logged_out_via_api
-    render nothing: true, status: 200
+    render body: nil, status: 200
   end
 
   private
   def error_response
-    render nothing: true, status: 400
+    render body: nil, status: 400
   end
 
 end

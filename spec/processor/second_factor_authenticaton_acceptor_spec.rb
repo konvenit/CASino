@@ -41,7 +41,7 @@ describe CASino::SecondFactorAuthenticationAcceptorProcessor do
 
           context 'with a long-term ticket-granting ticket' do
             before(:each) do
-              ticket_granting_ticket.update_attributes! long_term: true
+              ticket_granting_ticket.update! long_term: true
             end
 
             it 'calls the #user_logged_in method on the listener with an expiration date set' do

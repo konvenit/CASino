@@ -1,7 +1,7 @@
 require 'user_agent'
 
 class CASino::TicketGrantingTicket < ActiveRecord::Base
-  validates :ticket, uniqueness: true
+  validates :ticket, uniqueness: { case_sensitive: true }
 
   belongs_to :user
   has_many :service_tickets, dependent: :destroy
@@ -52,5 +52,9 @@ class CASino::TicketGrantingTicket < ActiveRecord::Base
       lifetime = CASino.config.ticket_granting_ticket[:lifetime]
     end
     (Time.now - (self.created_at || Time.now)) > lifetime
+  end
+
+  def password_expired?
+    user.extra_attributes[:password_expired]
   end
 end

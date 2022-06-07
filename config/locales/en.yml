@@ -1,7 +1,7 @@
 en:
   login_credential_acceptor:
     invalid_login_ticket: "Your login request did not include a valid login ticket."
-    invalid_login_credentials: "Incorrect username or password."
+    invalid_login_credentials: "Incorrect username or password, or your account is locked after wrong password was entered too many times."
   login:
     label_username: "Username"
     label_password: "Password"

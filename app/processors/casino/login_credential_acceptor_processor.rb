@@ -26,6 +26,7 @@ class CASino::LoginCredentialAcceptorProcessor < CASino::Processor
     if login_ticket_valid?(@params[:lt])
       authenticate_user
     else
+      Rails.logger.error "LoginCredentialAcceptorProcessor: login ticket is invalid #{@params[:lt]}"
       @listener.invalid_login_ticket(acquire_login_ticket)
     end
   end
@@ -36,6 +37,7 @@ class CASino::LoginCredentialAcceptorProcessor < CASino::Processor
     if !authentication_result.nil?
       user_logged_in(authentication_result)
     else
+      Rails.logger.error "LoginCredentialAcceptorProcessor: invalid login credential"
       @listener.invalid_login_credentials(acquire_login_ticket)
     end
   end
@@ -43,19 +45,29 @@ class CASino::LoginCredentialAcceptorProcessor < CASino::Processor
   def user_logged_in(authentication_result)
     long_term = @params[:rememberMe]
     ticket_granting_ticket = acquire_ticket_granting_ticket(authentication_result, @user_agent, long_term)
-    if ticket_granting_ticket.awaiting_two_factor_authentication?
+
+    if ticket_granting_ticket.awaiting_two_factor_authentication? and !ticket_granting_ticket.password_expired? and !(@listener.respond_to?(:disable_two_factor_auth?) and @listener.disable_two_factor_auth?)
       @listener.two_factor_authentication_pending(ticket_granting_ticket.ticket)
     else
       begin
         url = unless @params[:service].blank?
           acquire_service_ticket(ticket_granting_ticket, @params[:service], true).service_with_ticket_url
         end
-        if long_term
-          @listener.user_logged_in(url, ticket_granting_ticket.ticket, CASino.config.ticket_granting_ticket[:lifetime_long_term].seconds.from_now)
+
+        if ticket_granting_ticket.password_expired?
+          if long_term
+            @listener.password_expired(url, ticket_granting_ticket.ticket, CASino.config.ticket_granting_ticket[:lifetime_long_term].seconds.from_now)
+          else
+            @listener.password_expired(url, ticket_granting_ticket.ticket)
+          end
         else
-          @listener.user_logged_in(url, ticket_granting_ticket.ticket)
+          if long_term
+            @listener.user_logged_in(url, ticket_granting_ticket.ticket, CASino.config.ticket_granting_ticket[:lifetime_long_term].seconds.from_now)
+          else
+            @listener.user_logged_in(url, ticket_granting_ticket.ticket)
+          end
         end
-      rescue ServiceNotAllowedError => e
+      rescue CASino::ProcessorConcern::ServiceTickets::ServiceNotAllowedError
         @listener.service_not_allowed(clean_service_url @params[:service])
       end
     end

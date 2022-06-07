@@ -1,8 +1,8 @@
 class CASino::LoginTicket < ActiveRecord::Base
-  validates :ticket, uniqueness: true
+  validates :ticket, uniqueness: { case_sensitive: true }
 
   def self.cleanup
-    self.delete_all(['created_at < ?', CASino.config.login_ticket[:lifetime].seconds.ago])
+    where('created_at < ?', CASino.config.login_ticket[:lifetime].seconds.ago).delete_all
   end
 
   def to_s
