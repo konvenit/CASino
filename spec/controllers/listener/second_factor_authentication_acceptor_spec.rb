@@ -21,7 +21,7 @@ describe CASino::SecondFactorAuthenticationAcceptorListener do
     context 'with a service url' do
       let(:url) { 'http://www.example.com/?ticket=ST-123' }
       it 'tells the controller to redirect the client' do
-        controller.should_receive(:redirect_to).with(url, status: :see_other)
+        controller.should_receive(:redirect_to).with(url, status: :see_other, allow_other_host: true)
         listener.user_logged_in(url, ticket_granting_ticket)
       end
     end

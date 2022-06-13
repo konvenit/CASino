@@ -24,7 +24,7 @@ describe CASino::LogoutListener do
       end
 
       it 'tells the controller to redirect the client' do
-        controller.should_receive(:redirect_to).with(url, status: :see_other)
+        controller.should_receive(:redirect_to).with(url, status: :see_other, allow_other_host: true)
         listener.user_logged_out(url, true)
       end
 
