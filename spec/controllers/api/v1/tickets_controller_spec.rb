@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe CASino::Api::V1::TicketsController do
+describe CASino::API::V1::TicketsController do
   routes { CASino::Engine.routes }
 
   describe "POST /cas/v1/tickets" do

@@ -12,7 +12,7 @@ describe CASino::OtherSessionsDestroyerListener do
   describe '#other_sessions_destroyed' do
     let(:service) { 'http://www.example.com/' }
     it 'redirects back to the URL' do
-      controller.should_receive(:redirect_to).with(service)
+      controller.should_receive(:redirect_to).with(service, allow_other_host: true)
       listener.other_sessions_destroyed(service)
     end
   end

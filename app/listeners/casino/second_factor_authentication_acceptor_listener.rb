@@ -14,7 +14,7 @@ class CASino::SecondFactorAuthenticationAcceptorListener < CASino::Listener
     if url.nil?
       @controller.redirect_to sessions_path, status: :see_other
     else
-      @controller.redirect_to url, status: :see_other
+      @controller.redirect_to url, status: :see_other, allow_other_host: true
     end
   end
 

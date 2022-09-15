@@ -3,7 +3,7 @@ require_relative 'listener'
 class CASino::LogoutListener < CASino::Listener
   def user_logged_out(url, redirect_immediately = false)
     if redirect_immediately
-      @controller.redirect_to url, status: :see_other
+      @controller.redirect_to url, status: :see_other, allow_other_host: true
     else
       assign(:url, url)
     end
