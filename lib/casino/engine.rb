@@ -13,7 +13,7 @@ module CASino
 
     private
     def apply_yaml_config(yaml)
-      cfg = (YAML.load(ERB.new(yaml).result)||{}).fetch(Rails.env, {})
+      cfg = (YAML.safe_load(ERB.new(yaml).result, permitted_classes: [Symbol, Time], aliases: true) || {}).fetch(Rails.env, {})
       cfg.each do |k,v|
         value = if v.is_a? Hash
           CASino.config.fetch(k.to_sym,{}).merge(v.symbolize_keys)
