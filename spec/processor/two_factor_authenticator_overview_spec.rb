@@ -2,13 +2,13 @@ require 'spec_helper'
 
 describe CASino::TwoFactorAuthenticatorOverviewProcessor do
   describe '#process' do
-    let(:listener) { Object.new }
+    let(:listener) { Struct.new(:controller).new(controller: Object.new) }
     let(:processor) { described_class.new(listener) }
     let(:cookies) { { tgt: tgt } }
 
     before(:each) do
       listener.stub(:user_not_logged_in)
-      listener.stub(:two_factor_authenticators_found)
+      listener.stub(:two_factor_authenticator_found)
     end
 
     context 'with an existing ticket-granting ticket' do
@@ -18,27 +18,27 @@ describe CASino::TwoFactorAuthenticatorOverviewProcessor do
       let(:user_agent) { ticket_granting_ticket.user_agent }
 
       context 'without a two-factor authenticator registered' do
-        it 'calls the #two_factor_authenticators_found method on the listener' do
-          listener.should_receive(:two_factor_authenticators_found).with([])
+        it 'calls the #two_factor_authenticator_found method on the listener' do
+          listener.should_receive(:two_factor_authenticator_found).with(nil)
           processor.process(cookies, user_agent)
         end
       end
 
-      context 'with an inactive two-factor authenticator' do
-        let!(:two_factor_authenticator) { FactoryBot.create :two_factor_authenticator, :inactive, user: user }
+      context 'with an expired two-factor authenticator' do
+        let!(:two_factor_authenticator) { FactoryBot.create :two_factor_authenticator, created_at: 3.days.ago, user: user }
 
-        it 'does not include the inactive authenticator' do
-          listener.should_receive(:two_factor_authenticators_found).with([])
+        it 'the two_factor_authenticator_found should be nil' do
+          listener.should_receive(:two_factor_authenticator_found).with(nil)
           processor.process(cookies, user_agent)
         end
       end
 
-      context 'with a two-factor authenticator registered' do
+      context 'with a valid two-factor authenticator registered' do
         let(:two_factor_authenticator) { FactoryBot.create :two_factor_authenticator, user: user }
         let!(:other_two_factor_authenticator) { FactoryBot.create :two_factor_authenticator }
 
-        it 'calls the #two_factor_authenticators_found method on the listener' do
-          listener.should_receive(:two_factor_authenticators_found).with([two_factor_authenticator])
+        it 'calls the #two_factor_authenticator_found method on the listener' do
+          listener.should_receive(:two_factor_authenticator_found).with(two_factor_authenticator)
           processor.process(cookies, user_agent)
         end
       end

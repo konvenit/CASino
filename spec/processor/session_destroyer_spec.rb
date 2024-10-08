@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe CASino::SessionDestroyerProcessor do
   describe '#process' do
-    let(:listener) { Object.new }
+    let(:listener) { Struct.new(:controller).new(controller: Object.new) }
     let(:processor) { described_class.new(listener) }
     let(:owner_ticket_granting_ticket) { FactoryBot.create :ticket_granting_ticket }
     let(:user) { owner_ticket_granting_ticket.user }

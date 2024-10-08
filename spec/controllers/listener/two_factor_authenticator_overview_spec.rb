@@ -5,12 +5,12 @@ describe CASino::TwoFactorAuthenticatorOverviewListener do
   let(:controller) { Struct.new(:cookies).new(cookies: {}) }
   let(:listener) { described_class.new(controller) }
 
-  describe '#two_factor_authenticators_found' do
-    let(:two_factor_authenticators) { [Object.new] }
+  describe '#two_factor_authenticator_found' do
+    let(:two_factor_authenticator) { Object.new }
 
-    it 'assigns the two-factor authenticators' do
-      listener.two_factor_authenticators_found(two_factor_authenticators)
-      controller.instance_variable_get(:@two_factor_authenticators).should == two_factor_authenticators
+    it 'assigns the two-factor authenticator' do
+      listener.two_factor_authenticator_found(two_factor_authenticator)
+      controller.instance_variable_get(:@two_factor_authenticator).should == two_factor_authenticator
     end
   end
 end

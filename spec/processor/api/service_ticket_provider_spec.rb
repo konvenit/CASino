@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe CASino::API::ServiceTicketProviderProcessor do
   describe '#process' do
-    let(:listener) { Object.new }
+    let(:listener) { Struct.new(:controller).new(controller: Object.new) }
     let(:processor) { described_class.new(listener) }
 
     let(:service) { 'http://example.org/' }

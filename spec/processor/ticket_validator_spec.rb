@@ -3,7 +3,7 @@ require 'spec_helper'
 [CASino::ServiceTicketValidatorProcessor, CASino::ProxyTicketValidatorProcessor].each do |class_under_test|
   describe class_under_test do
     describe '#process' do
-      let(:listener) { Object.new }
+      let(:listener) { Struct.new(:controller).new(controller: Object.new) }
       let(:processor) { described_class.new(listener) }
       let(:service_ticket) { FactoryBot.create :service_ticket }
       let(:parameters) { { service: service_ticket.service, ticket: service_ticket.ticket }}

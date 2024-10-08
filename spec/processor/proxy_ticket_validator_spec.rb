@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe CASino::ProxyTicketValidatorProcessor do
-  let(:listener) { Object.new }
+  let(:listener) { Struct.new(:controller).new(controller: Object.new) }
   let(:processor) { described_class.new(listener) }
 
   describe '#process' do

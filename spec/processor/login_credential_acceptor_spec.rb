@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe CASino::LoginCredentialAcceptorProcessor do
   describe '#process' do
-    let(:listener) { Object.new }
+    let(:listener) { Struct.new(:controller).new(controller: Object.new) }
     let(:processor) { described_class.new(listener) }
 
     context 'without a valid login ticket' do
@@ -59,6 +59,13 @@ describe CASino::LoginCredentialAcceptorProcessor do
         context 'with two-factor authentication enabled' do
           let!(:user) { CASino::User.create! username: username, authenticator: authenticator }
           let!(:two_factor_authenticator) { FactoryBot.create :two_factor_authenticator, user: user }
+
+          before do
+            stub_const("Proxies::LoginOTP", Class.new)
+            stub_const("Notifikator", Class.new)
+            allow(Proxies::LoginOTP).to receive(:new).and_return(OpenStruct.new(otp: "898989", person_id: 123))
+            allow(Notifikator).to receive(:generate)
+          end
 
           it 'calls the `#two_factor_authentication_pending` method on the listener' do
             listener.should_receive(:two_factor_authentication_pending).with(/^TGC\-/)

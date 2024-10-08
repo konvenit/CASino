@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe CASino::API::LogoutProcessor do
   describe '#process' do
-    let(:listener) { Object.new }
+    let(:listener) { Struct.new(:controller).new(controller: Object.new) }
     let(:processor) { described_class.new(listener) }
 
     context 'with an existing ticket-granting ticket' do

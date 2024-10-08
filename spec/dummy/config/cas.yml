@@ -18,6 +18,7 @@ defaults: &defaults
           testuser:
             password: "foobar123"
             name: "Test User"
+            person_id: 123
 
 development:
   <<: *defaults

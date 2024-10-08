@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe CASino::TwoFactorAuthenticationAcceptorProcessor do
   describe '#process' do
-    let(:listener) { Object.new }
+    let(:listener) { Struct.new(:controller).new(controller: Object.new) }
     let(:processor) { described_class.new(listener) }
 
     before(:each) do
@@ -25,7 +25,7 @@ describe CASino::TwoFactorAuthenticationAcceptorProcessor do
 
         context 'with a valid OTP' do
           before(:each) do
-            ROTP::TOTP.any_instance.should_receive(:verify_with_drift).with(otp, 30).and_return(true)
+            ROTP::TOTP.any_instance.should_receive(:verify).with(otp).and_return(true)
           end
 
           it 'calls the `#user_logged_in` method an the listener' do
@@ -65,7 +65,7 @@ describe CASino::TwoFactorAuthenticationAcceptorProcessor do
 
         context 'with an invalid OTP' do
           before(:each) do
-            ROTP::TOTP.any_instance.should_receive(:verify_with_drift).with(otp, 30).and_return(false)
+            ROTP::TOTP.any_instance.should_receive(:verify).with(otp).and_return(false)
           end
 
           it 'calls the `#invalid_one_time_password` method an the listener' do

@@ -5,7 +5,7 @@ class CASino::TwoFactorAuthenticatorOverviewListener < CASino::Listener
     # nothing to do here
   end
 
-  def two_factor_authenticators_found(two_factor_authenticator)
+  def two_factor_authenticator_found(two_factor_authenticator)
     assign(:two_factor_authenticator, two_factor_authenticator)
   end
 end

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe CASino::ProxyTicketProviderProcessor do
   describe '#process' do
-    let(:listener) { Object.new }
+    let(:listener) { Struct.new(:controller).new(controller: Object.new) }
     let(:processor) { described_class.new(listener) }
     let(:params) { { targetService: 'this_does_not_have_to_be_a_url' } }
 

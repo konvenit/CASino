@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe CASino::API::LoginCredentialAcceptorProcessor do
   describe '#process' do
-    let(:listener) { Object.new }
+    let(:listener) { Struct.new(:controller).new(controller: Object.new) }
     let(:processor) { described_class.new(listener) }
     let(:user_agent) { 'ThisIsATestBrwoser 1.0' }
 

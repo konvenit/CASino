@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe CASino::LogoutProcessor do
   describe '#process' do
-    let(:listener) { Object.new }
+    let(:listener) { Struct.new(:controller).new(controller: Object.new) }
     let(:processor) { described_class.new(listener) }
     let(:cookies) { { tgt: tgt } }
     let(:url) { nil }

@@ -5,7 +5,7 @@
 class CASino::TwoFactorAuthenticatorOverviewProcessor < CASino::Processor
   include CASino::ProcessorConcern::TicketGrantingTickets
 
-  # This method will call `#user_not_logged_in` or `#two_factor_authenticators_found(Enumerable)` on the listener.
+  # This method will call `#user_not_logged_in` or `#two_factor_authenticator_found(Enumerable)` on the listener.
   # @param [Hash] cookies cookies delivered by the client
   # @param [String] user_agent user-agent delivered by the client
   def process(cookies = nil, user_agent = nil)
@@ -14,7 +14,8 @@ class CASino::TwoFactorAuthenticatorOverviewProcessor < CASino::Processor
     if tgt.nil?
       @listener.user_not_logged_in
     else
-      @listener.two_factor_authenticators_found(tgt.user.two_factor_authenticator)
+      two_factor_authenticator = tgt.user.two_factor_authenticator&.expired? ? nil : tgt.user.two_factor_authenticator
+      @listener.two_factor_authenticator_found(two_factor_authenticator)
     end
   end
 end
