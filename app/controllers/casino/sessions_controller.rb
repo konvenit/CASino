@@ -32,6 +32,6 @@ class CASino::SessionsController < CASino::ApplicationController
   end
 
   def validate_otp
-    processor(:SecondFactorAuthenticationAcceptor).process(params, request.user_agent)
+    processor(:TwoFactorAuthenticationAcceptor).process(params, request.user_agent)
   end
 end

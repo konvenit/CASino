@@ -20,8 +20,8 @@ describe CASino::SessionsController do
   end
 
   describe 'POST "validate_otp"' do
-    it 'calls the process method of the SecondFactorAuthenticatonAcceptor' do
-      CASino::SecondFactorAuthenticationAcceptorProcessor.any_instance.should_receive(:process) do
+    it 'calls the process method of the TwoFactorAuthenticatonAcceptor' do
+      CASino::TwoFactorAuthenticationAcceptorProcessor.any_instance.should_receive(:process) do
         @controller.render body: nil
       end
       post :validate_otp

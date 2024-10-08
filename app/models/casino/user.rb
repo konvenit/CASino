@@ -3,9 +3,9 @@ class CASino::User < ActiveRecord::Base
   serialize :extra_attributes, Hash
 
   has_many :ticket_granting_tickets
-  has_many :two_factor_authenticators
+  has_one  :two_factor_authenticator
 
-  def active_two_factor_authenticator
-    self.two_factor_authenticators.where(active: true).first
+  def cleanup_two_factor_authenticator
+    two_factor_authenticator&.destroy
   end
 end

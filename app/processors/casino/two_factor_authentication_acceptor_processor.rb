@@ -1,8 +1,6 @@
-# The SecondFactorAuthenticationAcceptor processor can be used to activate a previously generated ticket-granting ticket with pending two-factor authentication.
+# The TwoFactorAuthenticationAcceptor processor can be used to validate generated otp with the casino user two factor authenticator secret
 #
-# This feature is not described in the CAS specification so it's completly optional
-# to implement this on the web application side.
-class CASino::SecondFactorAuthenticationAcceptorProcessor < CASino::Processor
+class CASino::TwoFactorAuthenticationAcceptorProcessor < CASino::Processor
   include CASino::ProcessorConcern::ServiceTickets
   include CASino::ProcessorConcern::TicketGrantingTickets
   include CASino::ProcessorConcern::TwoFactorAuthenticators
@@ -18,10 +16,11 @@ class CASino::SecondFactorAuthenticationAcceptorProcessor < CASino::Processor
   def process(params = nil, user_agent = nil)
     cookies ||= {}
     tgt = find_valid_ticket_granting_ticket(params[:tgt], user_agent, true)
+
     if tgt.nil?
       @listener.user_not_logged_in
     else
-      validation_result = validate_one_time_password(params[:otp], tgt.user.active_two_factor_authenticator)
+      validation_result = validate_one_time_password(params[:otp], tgt.user.two_factor_authenticator)
       if validation_result.success?
         tgt.awaiting_two_factor_authentication = false
         tgt.save!

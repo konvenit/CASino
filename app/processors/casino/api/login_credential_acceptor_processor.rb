@@ -36,7 +36,7 @@ class CASino::API::LoginCredentialAcceptorProcessor < CASino::Processor
   end
 
   def generate_ticket_granting_ticket
-    @ticket_granting_ticket = acquire_ticket_granting_ticket(@authentication_result, @user_agent)
+    @ticket_granting_ticket = acquire_ticket_granting_ticket(authentication_result: @authentication_result, user_agent: @user_agent, processor: self)
   end
 
   def callback_invalid_login_credentials

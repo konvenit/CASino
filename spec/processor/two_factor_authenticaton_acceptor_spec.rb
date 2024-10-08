@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe CASino::SecondFactorAuthenticationAcceptorProcessor do
+describe CASino::TwoFactorAuthenticationAcceptorProcessor do
   describe '#process' do
     let(:listener) { Object.new }
     let(:processor) { described_class.new(listener) }
