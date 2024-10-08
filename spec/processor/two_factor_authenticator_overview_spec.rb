@@ -12,7 +12,7 @@ describe CASino::TwoFactorAuthenticatorOverviewProcessor do
     end
 
     context 'with an existing ticket-granting ticket' do
-      let(:ticket_granting_ticket) { FactoryGirl.create :ticket_granting_ticket }
+      let(:ticket_granting_ticket) { FactoryBot.create :ticket_granting_ticket }
       let(:user) { ticket_granting_ticket.user }
       let(:tgt) { ticket_granting_ticket.ticket }
       let(:user_agent) { ticket_granting_ticket.user_agent }
@@ -25,7 +25,7 @@ describe CASino::TwoFactorAuthenticatorOverviewProcessor do
       end
 
       context 'with an inactive two-factor authenticator' do
-        let!(:two_factor_authenticator) { FactoryGirl.create :two_factor_authenticator, :inactive, user: user }
+        let!(:two_factor_authenticator) { FactoryBot.create :two_factor_authenticator, :inactive, user: user }
 
         it 'does not include the inactive authenticator' do
           listener.should_receive(:two_factor_authenticators_found).with([])
@@ -34,8 +34,8 @@ describe CASino::TwoFactorAuthenticatorOverviewProcessor do
       end
 
       context 'with a two-factor authenticator registered' do
-        let(:two_factor_authenticator) { FactoryGirl.create :two_factor_authenticator, user: user }
-        let!(:other_two_factor_authenticator) { FactoryGirl.create :two_factor_authenticator }
+        let(:two_factor_authenticator) { FactoryBot.create :two_factor_authenticator, user: user }
+        let!(:other_two_factor_authenticator) { FactoryBot.create :two_factor_authenticator }
 
         it 'calls the #two_factor_authenticators_found method on the listener' do
           listener.should_receive(:two_factor_authenticators_found).with([two_factor_authenticator])

@@ -6,7 +6,7 @@ describe CASino::API::LogoutProcessor do
     let(:processor) { described_class.new(listener) }
 
     context 'with an existing ticket-granting ticket' do
-      let(:ticket_granting_ticket) { FactoryGirl.create(:ticket_granting_ticket) }
+      let(:ticket_granting_ticket) { FactoryBot.create(:ticket_granting_ticket) }
       let(:user_agent) { ticket_granting_ticket.user_agent }
 
       it 'deletes the ticket-granting ticket' do

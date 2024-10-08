@@ -13,7 +13,7 @@ describe CASino::LoginCredentialAcceptorProcessor do
     end
 
     context 'with an expired login ticket' do
-      let(:expired_login_ticket) { FactoryGirl.create :login_ticket, :expired }
+      let(:expired_login_ticket) { FactoryBot.create :login_ticket, :expired }
 
       it 'calls the #invalid_login_ticket method on the listener' do
         listener.should_receive(:invalid_login_ticket).with(kind_of(CASino::LoginTicket))
@@ -22,7 +22,7 @@ describe CASino::LoginCredentialAcceptorProcessor do
     end
 
     context 'with a valid login ticket' do
-      let(:login_ticket) { FactoryGirl.create :login_ticket }
+      let(:login_ticket) { FactoryBot.create :login_ticket }
 
       context 'with invalid credentials' do
         it 'calls the #invalid_login_credentials method on the listener' do
@@ -58,7 +58,7 @@ describe CASino::LoginCredentialAcceptorProcessor do
 
         context 'with two-factor authentication enabled' do
           let!(:user) { CASino::User.create! username: username, authenticator: authenticator }
-          let!(:two_factor_authenticator) { FactoryGirl.create :two_factor_authenticator, user: user }
+          let!(:two_factor_authenticator) { FactoryBot.create :two_factor_authenticator, user: user }
 
           it 'calls the `#two_factor_authentication_pending` method on the listener' do
             listener.should_receive(:two_factor_authentication_pending).with(/^TGC\-/)
@@ -68,7 +68,7 @@ describe CASino::LoginCredentialAcceptorProcessor do
 
         context 'with a not allowed service' do
           before(:each) do
-            FactoryGirl.create :service_rule, :regex, url: '^https://.*'
+            FactoryBot.create :service_rule, :regex, url: '^https://.*'
           end
           let(:service) { 'http://www.example.org/' }
 

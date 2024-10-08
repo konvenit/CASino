@@ -12,7 +12,7 @@ describe CASino::TwoFactorAuthenticationAcceptorProcessor do
     end
 
     context 'with an existing ticket-granting ticket' do
-      let(:ticket_granting_ticket) { FactoryGirl.create :ticket_granting_ticket, :awaiting_two_factor_authentication }
+      let(:ticket_granting_ticket) { FactoryBot.create :ticket_granting_ticket, :awaiting_two_factor_authentication }
       let(:user) { ticket_granting_ticket.user }
       let(:tgt) { ticket_granting_ticket.ticket }
       let(:user_agent) { ticket_granting_ticket.user_agent }
@@ -21,7 +21,7 @@ describe CASino::TwoFactorAuthenticationAcceptorProcessor do
       let(:params) { { tgt: tgt, otp: otp, service: service }}
 
       context 'with an active authenticator' do
-        let!(:two_factor_authenticator) { FactoryGirl.create :two_factor_authenticator, user: user }
+        let!(:two_factor_authenticator) { FactoryBot.create :two_factor_authenticator, user: user }
 
         context 'with a valid OTP' do
           before(:each) do
@@ -52,7 +52,7 @@ describe CASino::TwoFactorAuthenticationAcceptorProcessor do
 
           context 'with a not allowed service' do
             before(:each) do
-              FactoryGirl.create :service_rule, :regex, url: '^https://.*'
+              FactoryBot.create :service_rule, :regex, url: '^https://.*'
             end
             let(:service) { 'http://www.example.org/' }
 

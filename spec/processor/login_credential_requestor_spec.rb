@@ -7,7 +7,7 @@ describe CASino::LoginCredentialRequestorProcessor do
 
     context 'with a not allowed service' do
       before(:each) do
-        FactoryGirl.create :service_rule, :regex, url: '^https://.*'
+        FactoryBot.create :service_rule, :regex, url: '^https://.*'
       end
       let(:service) { 'http://www.example.org/' }
       let(:params) { { service: service } }
@@ -47,7 +47,7 @@ describe CASino::LoginCredentialRequestorProcessor do
     end
 
     context 'when logged in' do
-      let(:ticket_granting_ticket) { FactoryGirl.create :ticket_granting_ticket }
+      let(:ticket_granting_ticket) { FactoryBot.create :ticket_granting_ticket }
       let(:user_agent) { ticket_granting_ticket.user_agent }
       let(:cookies) { { tgt: ticket_granting_ticket.ticket } }
 
@@ -56,7 +56,7 @@ describe CASino::LoginCredentialRequestorProcessor do
       end
 
       context 'when two-factor authentication is pending' do
-        let(:ticket_granting_ticket) { FactoryGirl.create :ticket_granting_ticket, :awaiting_two_factor_authentication }
+        let(:ticket_granting_ticket) { FactoryBot.create :ticket_granting_ticket, :awaiting_two_factor_authentication }
 
         it 'calls the #user_not_logged_in method on the listener' do
           listener.should_receive(:user_not_logged_in).with(kind_of(CASino::LoginTicket))

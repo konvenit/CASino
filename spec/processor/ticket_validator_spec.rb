@@ -5,7 +5,7 @@ require 'spec_helper'
     describe '#process' do
       let(:listener) { Object.new }
       let(:processor) { described_class.new(listener) }
-      let(:service_ticket) { FactoryGirl.create :service_ticket }
+      let(:service_ticket) { FactoryBot.create :service_ticket }
       let(:parameters) { { service: service_ticket.service, ticket: service_ticket.ticket }}
       let(:regex_failure) { /\A\<cas\:serviceResponse.*\n.*authenticationFailure/ }
       let(:regex_success) { /\A\<cas\:serviceResponse.*\n.*authenticationSuccess/ }

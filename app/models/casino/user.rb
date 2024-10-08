@@ -1,6 +1,6 @@
 
 class CASino::User < ActiveRecord::Base
-  serialize :extra_attributes, Hash
+  serialize :extra_attributes, type: Hash
 
   has_many :ticket_granting_tickets
   has_one  :two_factor_authenticator

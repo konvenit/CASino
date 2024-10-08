@@ -4,7 +4,7 @@ describe CASino::LegacyValidatorProcessor do
   describe '#process' do
     let(:listener) { Object.new }
     let(:processor) { described_class.new(listener) }
-    let(:service_ticket) { FactoryGirl.create :service_ticket }
+    let(:service_ticket) { FactoryBot.create :service_ticket }
     let(:parameters) { { service: service_ticket.service, ticket: service_ticket.ticket }}
     let(:username) { service_ticket.ticket_granting_ticket.user.username }
 

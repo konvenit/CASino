@@ -13,7 +13,7 @@ describe CASino::LogoutProcessor do
     end
 
     context 'with an existing ticket-granting ticket' do
-      let(:ticket_granting_ticket) { FactoryGirl.create :ticket_granting_ticket }
+      let(:ticket_granting_ticket) { FactoryBot.create :ticket_granting_ticket }
       let(:tgt) { ticket_granting_ticket.ticket }
       let(:user_agent) { ticket_granting_ticket.user_agent }
 
@@ -49,7 +49,7 @@ describe CASino::LogoutProcessor do
 
         context '(not whitelisted)' do
           before(:each) do
-            FactoryGirl.create :service_rule, :regex, url: '^https://.*'
+            FactoryBot.create :service_rule, :regex, url: '^https://.*'
           end
 
           it 'calls the #user_logged_out method on the listener and passes no URL' do

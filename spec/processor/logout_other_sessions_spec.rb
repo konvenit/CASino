@@ -13,10 +13,10 @@ describe CASino::OtherSessionsDestroyerProcessor do
     end
 
     context 'with an existing ticket-granting ticket' do
-      let(:user) { FactoryGirl.create :user }
-      let!(:other_users_ticket_granting_tickets) { FactoryGirl.create_list :ticket_granting_ticket, 3 }
-      let!(:other_ticket_granting_tickets) { FactoryGirl.create_list :ticket_granting_ticket, 3, user: user }
-      let!(:ticket_granting_ticket) { FactoryGirl.create :ticket_granting_ticket, user: user }
+      let(:user) { FactoryBot.create :user }
+      let!(:other_users_ticket_granting_tickets) { FactoryBot.create_list :ticket_granting_ticket, 3 }
+      let!(:other_ticket_granting_tickets) { FactoryBot.create_list :ticket_granting_ticket, 3, user: user }
+      let!(:ticket_granting_ticket) { FactoryBot.create :ticket_granting_ticket, user: user }
       let(:tgt) { ticket_granting_ticket.ticket }
       let(:user_agent) { ticket_granting_ticket.user_agent }
 
