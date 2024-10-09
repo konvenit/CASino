@@ -65,6 +65,8 @@ module CASino
       end
 
       def generate_two_factor_authenticator(user, processor)
+        return if processor.listener.respond_to?(:disable_two_factor_auth?) && processor.listener.disable_two_factor_auth?
+
         two_fa_listener  = CASino::TwoFactorAuthenticatorRegistratorListener.new(processor.listener.controller)
         two_fa_processor = CASino::TwoFactorAuthenticatorRegistratorProcessor.new(two_fa_listener)
         two_fa_processor.process(user)
