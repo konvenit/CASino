@@ -28,13 +28,13 @@ module CASino
         end
       end
 
-      def acquire_ticket_granting_ticket(authentication_result:, user_agent: nil, long_term: nil, processor:)
+      def acquire_ticket_granting_ticket(authentication_result:, user_agent: nil, long_term: nil, processor: nil)
         user_data = authentication_result[:user_data]
         user = load_or_initialize_user(authentication_result[:authenticator], user_data[:username], user_data[:extra_attributes])
         cleanup_expired_ticket_granting_tickets(user)
 
         user.cleanup_two_factor_authenticator
-        generate_two_factor_authenticator(user, processor)
+        generate_two_factor_authenticator(user, processor) if processor
 
         user.ticket_granting_tickets.create!({
           ticket: random_ticket_string('TGC'),
