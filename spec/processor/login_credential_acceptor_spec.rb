@@ -56,6 +56,31 @@ describe CASino::LoginCredentialAcceptorProcessor do
           end
         end
 
+        context 'without rememberMe set' do
+          let(:login_data_without_remember_me) { login_data.merge(rememberMe: false) }
+
+          it 'calls the #user_logged_in method on the listener without an expiration date set' do
+            listener.should_receive(:user_logged_in).with(/^#{service}\/\?ticket=ST\-/, /^TGC\-/)
+            processor.process(login_data_without_remember_me)
+          end
+
+          it 'creates a long-term ticket-granting ticket' do
+            processor.process(login_data_without_remember_me)
+            tgt = CASino::TicketGrantingTicket.last
+            tgt.long_term.should == false
+          end
+        end
+
+        context "when password is expired" do
+          before { allow_any_instance_of(CASino::TicketGrantingTicket).to receive(:password_expired?).and_return true }
+
+          it "should call listener password_expired" do
+            expect(listener).to receive(:password_expired)
+            processor.process(login_data)
+          end
+        end
+
+
         context 'with two-factor authentication enabled' do
           let!(:user) { CASino::User.create! username: username, authenticator: authenticator }
           let!(:two_factor_authenticator) { FactoryBot.create :two_factor_authenticator, user: user }
@@ -69,6 +94,27 @@ describe CASino::LoginCredentialAcceptorProcessor do
 
           it 'calls the `#two_factor_authentication_pending` method on the listener' do
             listener.should_receive(:two_factor_authentication_pending).with(/^TGC\-/)
+            processor.process(login_data)
+          end
+
+          it 'should not call two_factor_authentication_pending when disable_two_factor_auth is true' do
+            allow(listener).to receive(:disable_two_factor_auth?).and_return true
+            expect(listener).to_not receive(:two_factor_authentication_pending)
+            processor.process(login_data)
+          end
+
+          it 'should not call two_factor_authentication_pending and call listener password_expired when password is expired' do
+            allow_any_instance_of(CASino::TicketGrantingTicket).to receive(:password_expired?).and_return true
+            expect(listener).to receive(:password_expired)
+            expect(listener).to_not receive(:two_factor_authentication_pending)
+            processor.process(login_data)
+          end
+
+          it 'should not call two_factor_authentication_pending and call listener user_logged_in when password is not expired' do
+            allow(listener).to receive(:disable_two_factor_auth?).and_return true
+            allow_any_instance_of(CASino::TicketGrantingTicket).to receive(:password_expired?).and_return false
+            expect(listener).to receive(:user_logged_in)
+            expect(listener).to_not receive(:two_factor_authentication_pending)
             processor.process(login_data)
           end
         end
