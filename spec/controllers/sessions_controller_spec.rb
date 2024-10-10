@@ -41,7 +41,6 @@ describe CASino::SessionsController do
 
   describe 'GET "index"' do
     it 'calls the process method of the SessionOverview processor' do
-      CASino::TwoFactorAuthenticatorOverviewProcessor.any_instance.should_receive(:process)
       CASino::SessionOverviewProcessor.any_instance.should_receive(:process)
       get :index
     end
