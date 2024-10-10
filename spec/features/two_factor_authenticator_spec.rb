@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-xdescribe 'TwoFactorAuthenticator' do
+describe 'TwoFactorAuthenticator' do
   include CASino::Engine.routes.url_helpers
 
   subject { page }

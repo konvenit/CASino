@@ -17,9 +17,9 @@ describe CASino::TwoFactorAuthenticatorRegistratorProcessor do
     end
 
     it 'creates exactly one authenticator' do
-      lambda do
+      expect do
         processor.process(user)
-      end.should change(CASino::TwoFactorAuthenticator, :count).by(1)
+      end.to change(CASino::TwoFactorAuthenticator, :count).by(1)
     end
 
     it 'calls #two_factor_authenticator_created on the listener' do

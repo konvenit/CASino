@@ -51,7 +51,7 @@ class CASino::TicketGrantingTicket < ActiveRecord::Base
     else
       lifetime = CASino.config.ticket_granting_ticket[:lifetime]
     end
-    (Time.now - (self.created_at || Time.now)) > lifetime
+    (Time.current - (self.created_at || Time.current)) > lifetime
   end
 
   def password_expired?

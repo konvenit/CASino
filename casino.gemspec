@@ -32,6 +32,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'factory_bot_rails', '>= 6.2.1'
   s.add_development_dependency 'webmock', '>= 1.9'
   s.add_development_dependency 'coveralls', '>= 0.7'
+  s.add_development_dependency 'pry-nav'
 
   s.add_runtime_dependency 'rails', '>= 6.1'
   s.add_runtime_dependency 'http_accept_language', '>= 2.0.0.pre'

@@ -21,9 +21,9 @@ describe CASino::OtherSessionsDestroyerProcessor do
       let(:user_agent) { ticket_granting_ticket.user_agent }
 
       it 'deletes all other ticket-granting tickets' do
-        lambda do
+        expect do
           processor.process(params, cookies, user_agent)
-        end.should change(CASino::TicketGrantingTicket, :count).by(-3)
+        end.to change(CASino::TicketGrantingTicket, :count).by(-3)
       end
 
       it 'calls the #user_logged_out method on the listener' do

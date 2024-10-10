@@ -23,9 +23,9 @@ describe CASino::SessionDestroyerProcessor do
       it 'deletes exactly one ticket-granting ticket' do
         ticket_granting_ticket
         owner_ticket_granting_ticket
-        lambda do
+        expect do
           processor.process(params, cookies, user_agent)
-        end.should change(CASino::TicketGrantingTicket, :count).by(-1)
+        end.to change(CASino::TicketGrantingTicket, :count).by(-1)
       end
 
       it 'deletes the ticket-granting ticket' do
@@ -43,9 +43,9 @@ describe CASino::SessionDestroyerProcessor do
       let(:params) { { id: 99999 } }
       it 'does not delete a ticket-granting ticket' do
         owner_ticket_granting_ticket
-        lambda do
+        expect do
           processor.process(params, cookies, user_agent)
-        end.should_not change(CASino::TicketGrantingTicket, :count)
+        end.to change(CASino::TicketGrantingTicket, :count).by(0)
       end
 
       it 'calls the #ticket_not_found method on the listener' do
@@ -61,9 +61,9 @@ describe CASino::SessionDestroyerProcessor do
       it 'does not delete a ticket-granting ticket' do
         owner_ticket_granting_ticket
         ticket_granting_ticket
-        lambda do
+        expect do
           processor.process(params, cookies, user_agent)
-        end.should change(CASino::TicketGrantingTicket, :count).by(0)
+        end.to change(CASino::TicketGrantingTicket, :count).by(0)
       end
 
       it 'calls the #ticket_not_found method on the listener' do

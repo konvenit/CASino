@@ -107,16 +107,16 @@ describe CASino::LoginCredentialAcceptorProcessor do
           end
 
           it 'generates a ticket-granting ticket' do
-            lambda do
+            expect do
               processor.process(login_data)
-            end.should change(CASino::TicketGrantingTicket, :count).by(1)
+            end.to change(CASino::TicketGrantingTicket, :count).by(1)
           end
 
           context 'when the user does not exist yet' do
             it 'generates exactly one user' do
-              lambda do
+              expect do
                 processor.process(login_data)
-              end.should change(CASino::User, :count).by(1)
+              end.to change(CASino::User, :count).by(1)
             end
 
             it 'sets the users attributes' do
@@ -130,17 +130,17 @@ describe CASino::LoginCredentialAcceptorProcessor do
           context 'when the user already exists' do
             it 'does not regenerate the user' do
               CASino::User.create! username: username, authenticator: authenticator
-              lambda do
+              expect do
                 processor.process(login_data)
-              end.should_not change(CASino::User, :count)
+              end.to change(CASino::User, :count).by(0)
             end
 
             it 'updates the extra attributes' do
               user = CASino::User.create! username: username, authenticator: authenticator
-              lambda do
+              expect do
                 processor.process(login_data)
                 user.reload
-              end.should change(user, :extra_attributes)
+              end.to change(user, :extra_attributes)
             end
           end
         end
@@ -154,15 +154,15 @@ describe CASino::LoginCredentialAcceptorProcessor do
           end
 
           it 'generates a service ticket' do
-            lambda do
+            expect do
               processor.process(login_data)
-            end.should change(CASino::ServiceTicket, :count).by(1)
+            end.to change(CASino::ServiceTicket, :count).by(1)
           end
 
           it 'generates a ticket-granting ticket' do
-            lambda do
+            expect do
               processor.process(login_data)
-            end.should change(CASino::TicketGrantingTicket, :count).by(1)
+            end.to change(CASino::TicketGrantingTicket, :count).by(1)
           end
         end
       end

@@ -157,9 +157,9 @@ describe CASino::TicketGrantingTicket do
     it 'deletes expired ticket-granting tickets' do
       ticket_granting_ticket.created_at = 25.hours.ago
       ticket_granting_ticket.save!
-      lambda do
+      expect do
         described_class.cleanup
-      end.should change(described_class, :count).by(-1)
+      end.to change(described_class, :count).by(-1)
       described_class.find_by_ticket(ticket_granting_ticket.ticket).should be_falsey
     end
 
@@ -167,18 +167,18 @@ describe CASino::TicketGrantingTicket do
       ticket_granting_ticket.created_at = 9.days.ago
       ticket_granting_ticket.long_term = true
       ticket_granting_ticket.save!
-      lambda do
+      expect do
         described_class.cleanup
-      end.should_not change(described_class, :count)
+      end.to change(described_class, :count).by(0)
     end
 
     it 'does delete expired long-term ticket-granting tickets' do
       ticket_granting_ticket.created_at = 30.days.ago
       ticket_granting_ticket.long_term = true
       ticket_granting_ticket.save!
-      lambda do
+      expect do
         described_class.cleanup
-      end.should change(described_class, :count).by(-1)
+      end.to change(described_class, :count).by(-1)
       described_class.find_by_ticket(ticket_granting_ticket.ticket).should be_falsey
     end
 
@@ -186,18 +186,18 @@ describe CASino::TicketGrantingTicket do
       ticket_granting_ticket.created_at = 2.minutes.ago
       ticket_granting_ticket.awaiting_two_factor_authentication = true
       ticket_granting_ticket.save!
-      lambda do
+      expect do
         described_class.cleanup
-      end.should_not change(described_class, :count)
+      end.to change(described_class, :count).by(0)
     end
 
     it 'does delete expired ticket-granting tickets with pending two-factor authentication' do
       ticket_granting_ticket.created_at = 20.minutes.ago
       ticket_granting_ticket.awaiting_two_factor_authentication = true
       ticket_granting_ticket.save!
-      lambda do
+      expect do
         described_class.cleanup
-      end.should change(described_class, :count).by(-1)
+      end.to change(described_class, :count).by(-1)
       described_class.find_by_ticket(ticket_granting_ticket.ticket).should be_falsey
     end
   end

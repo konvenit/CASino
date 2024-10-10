@@ -38,9 +38,9 @@ describe CASino::ServiceRule do
       let(:service_url) { 'https://www111.example.com/bla' }
 
       it 'does not take too long to check a denied service' do
-        start = Time.now
+        start = Time.current
         described_class.allowed?(service_url).should == false
-        (Time.now - start).should < 1.0
+        (Time.current - start).should < 1.0
       end
     end
 

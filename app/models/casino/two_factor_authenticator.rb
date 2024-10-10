@@ -10,6 +10,6 @@ class CASino::TwoFactorAuthenticator < ActiveRecord::Base
   end
 
   def expired?
-    (Time.now - (self.created_at || Time.now)) > self.class.lifetime
+    (Time.current - (self.created_at || Time.current)) > self.class.lifetime
   end
 end

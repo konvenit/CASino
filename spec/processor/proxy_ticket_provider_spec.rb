@@ -18,9 +18,9 @@ describe CASino::ProxyTicketProviderProcessor do
       end
 
       it 'does not create a proxy ticket' do
-        lambda do
+        expect do
           processor.process(params)
-        end.should_not change(CASino::ProxyTicket, :count)
+        end.to change(CASino::ProxyTicket, :count).by(0)
       end
     end
 
@@ -33,9 +33,9 @@ describe CASino::ProxyTicketProviderProcessor do
       end
 
       it 'does not create a proxy ticket' do
-        lambda do
+        expect do
           processor.process(params_with_deleted_pgt)
-        end.should_not change(CASino::ProxyTicket, :count)
+        end.to change(CASino::ProxyTicket, :count).by(0)
       end
     end
 
@@ -49,9 +49,9 @@ describe CASino::ProxyTicketProviderProcessor do
       end
 
       it 'does not create a proxy ticket' do
-        lambda do
+        expect do
           processor.process(params_with_valid_pgt)
-        end.should change(proxy_granting_ticket.proxy_tickets, :count).by(1)
+        end.to change(proxy_granting_ticket.proxy_tickets, :count).by(1)
       end
 
       it 'includes the proxy ticket in the response' do

@@ -86,9 +86,9 @@ describe CASino::LoginCredentialRequestorProcessor do
         end
 
         it 'generates a service ticket' do
-          lambda do
+          expect do
             processor.process(params, cookies, user_agent)
-          end.should change(CASino::ServiceTicket, :count).by(1)
+          end.to change(CASino::ServiceTicket, :count).by(1)
         end
 
         context 'with renew parameter' do
@@ -126,9 +126,9 @@ describe CASino::LoginCredentialRequestorProcessor do
         end
 
         it 'does not generate a service ticket' do
-          lambda do
+          expect do
             processor.process(nil, cookies, user_agent)
-          end.should change(CASino::ServiceTicket, :count).by(0)
+          end.to change(CASino::ServiceTicket, :count).by(0)
         end
 
         context 'with a changed browser' do

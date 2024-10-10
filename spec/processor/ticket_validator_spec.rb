@@ -131,9 +131,9 @@ require 'spec_helper'
             end
 
             it 'does not create a proxy-granting ticket' do
-              lambda do
+              expect do
                 processor.process(parameters_with_pgt_url)
-              end.should_not change(service_ticket.proxy_granting_tickets, :count)
+              end.to change(service_ticket.proxy_granting_tickets, :count).by(0)
             end
           end
 
@@ -148,9 +148,9 @@ require 'spec_helper'
           end
 
           it 'creates a proxy-granting ticket' do
-            lambda do
+            expect do
               processor.process(parameters_with_pgt_url)
-            end.should change(service_ticket.proxy_granting_tickets, :count).by(1)
+            end.to change(service_ticket.proxy_granting_tickets, :count).by(1)
           end
 
           it 'contacts the callback server' do
@@ -173,9 +173,9 @@ require 'spec_helper'
             end
 
             it 'does not create a proxy-granting ticket' do
-              lambda do
+              expect do
                 processor.process(parameters_with_pgt_url)
-              end.should_not change(service_ticket.proxy_granting_tickets, :count)
+              end.to change(service_ticket.proxy_granting_tickets, :count).by(0)
             end
           end
 
@@ -190,9 +190,9 @@ require 'spec_helper'
             end
 
             it 'does not create a proxy-granting ticket' do
-              lambda do
+              expect do
                 processor.process(parameters_with_pgt_url)
-              end.should_not change(service_ticket.proxy_granting_tickets, :count)
+              end.to change(service_ticket.proxy_granting_tickets, :count).by(0)
             end
           end
         end
