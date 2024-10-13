@@ -1,14 +1,14 @@
 require 'spec_helper'
 
 describe CASino::ProxyTicketValidatorProcessor do
-  let(:listener) { Object.new }
+  let(:listener) { Struct.new(:controller).new(controller: Object.new) }
   let(:processor) { described_class.new(listener) }
 
   describe '#process' do
     let(:regex_success) { /\A<cas:serviceResponse.*\n.*authenticationSuccess/ }
 
     context 'with a login ticket' do
-      let(:login_ticket) { FactoryGirl.create :login_ticket }
+      let(:login_ticket) { FactoryBot.create :login_ticket }
       let(:parameters) { { ticket: login_ticket.ticket, service: 'http://www.example.org/' } }
 
       it 'calls the #validation_failed method on the listener' do
@@ -18,7 +18,7 @@ describe CASino::ProxyTicketValidatorProcessor do
     end
 
     context 'with an unconsumed proxy ticket' do
-      let(:proxy_ticket) { FactoryGirl.create :proxy_ticket }
+      let(:proxy_ticket) { FactoryBot.create :proxy_ticket }
       let(:parameters) { { ticket: proxy_ticket.ticket, service: proxy_ticket.service } }
       let(:regex_proxy) { /<cas:proxies>\s*<cas:proxy>#{proxy_ticket.proxy_granting_ticket.pgt_url}<\/cas:proxy>\s*<\/cas:proxies>/ }
 

@@ -31,10 +31,10 @@ namespace :casino do
       puts "Deleted #{rows_affected} login tickets."
     end
 
-    desc 'Remove expired inactive two-factor authenticators.'
+    desc 'Remove expired two-factor authenticators.'
     task two_factor_authenticators: :environment do
       rows_affected = CASino::TwoFactorAuthenticator.cleanup
-      puts "Deleted #{rows_affected} inactive two-factor authenticators."
+      puts "Deleted #{rows_affected} expired two-factor authenticators."
     end
 
     desc 'Remove expired ticket-granting tickets.'

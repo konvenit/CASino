@@ -2,12 +2,12 @@ require 'spec_helper'
 
 describe CASino::LoginCredentialRequestorProcessor do
   describe '#process' do
-    let(:listener) { Object.new }
+    let(:listener) { Struct.new(:controller).new(controller: Object.new) }
     let(:processor) { described_class.new(listener) }
 
     context 'with a not allowed service' do
       before(:each) do
-        FactoryGirl.create :service_rule, :regex, url: '^https://.*'
+        FactoryBot.create :service_rule, :regex, url: '^https://.*'
       end
       let(:service) { 'http://www.example.org/' }
       let(:params) { { service: service } }
@@ -47,7 +47,7 @@ describe CASino::LoginCredentialRequestorProcessor do
     end
 
     context 'when logged in' do
-      let(:ticket_granting_ticket) { FactoryGirl.create :ticket_granting_ticket }
+      let(:ticket_granting_ticket) { FactoryBot.create :ticket_granting_ticket }
       let(:user_agent) { ticket_granting_ticket.user_agent }
       let(:cookies) { { tgt: ticket_granting_ticket.ticket } }
 
@@ -56,7 +56,7 @@ describe CASino::LoginCredentialRequestorProcessor do
       end
 
       context 'when two-factor authentication is pending' do
-        let(:ticket_granting_ticket) { FactoryGirl.create :ticket_granting_ticket, :awaiting_two_factor_authentication }
+        let(:ticket_granting_ticket) { FactoryBot.create :ticket_granting_ticket, :awaiting_two_factor_authentication }
 
         it 'calls the #user_not_logged_in method on the listener' do
           listener.should_receive(:user_not_logged_in).with(kind_of(CASino::LoginTicket))
@@ -86,9 +86,9 @@ describe CASino::LoginCredentialRequestorProcessor do
         end
 
         it 'generates a service ticket' do
-          lambda do
+          expect do
             processor.process(params, cookies, user_agent)
-          end.should change(CASino::ServiceTicket, :count).by(1)
+          end.to change(CASino::ServiceTicket, :count).by(1)
         end
 
         context 'with renew parameter' do
@@ -126,9 +126,9 @@ describe CASino::LoginCredentialRequestorProcessor do
         end
 
         it 'does not generate a service ticket' do
-          lambda do
+          expect do
             processor.process(nil, cookies, user_agent)
-          end.should change(CASino::ServiceTicket, :count).by(0)
+          end.to change(CASino::ServiceTicket, :count).by(0)
         end
 
         context 'with a changed browser' do

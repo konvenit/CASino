@@ -11,6 +11,11 @@ class CASino::LoginCredentialRequestorListener < CASino::Listener
     @controller.render 'service_not_allowed', status: 403
   end
 
+  def two_factor_authentication_pending(ticket_granting_ticket)
+    assign(:ticket_granting_ticket, ticket_granting_ticket)
+    @controller.render 'validate_otp'
+  end
+
   def user_logged_in(url)
     if url.nil?
       @controller.redirect_to sessions_path

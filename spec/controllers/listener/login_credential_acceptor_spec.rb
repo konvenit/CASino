@@ -34,7 +34,7 @@ describe CASino::LoginCredentialAcceptorListener do
 
     context 'with cookie expiry time' do
       let(:url) { Object.new }
-      let(:expiry_time) { Time.now }
+      let(:expiry_time) { Time.current }
       it 'set the tgt cookie expiry time' do
         listener.user_logged_in(url, ticket_granting_ticket, expiry_time)
         controller.cookies[:tgt][:value].should == ticket_granting_ticket

@@ -11,12 +11,12 @@ describe CASino::ProcessorConcern::ServiceTickets do
   }
 
   describe '#acquire_service_ticket' do
-    let(:ticket_granting_ticket) { FactoryGirl.create :ticket_granting_ticket }
+    let(:ticket_granting_ticket) { FactoryBot.create :ticket_granting_ticket }
     let(:service) { 'http://www.example.com/' }
 
     context 'with a ticket-granting ticket with existing service tickets' do
-      let!(:service_ticket) { FactoryGirl.create :service_ticket, ticket_granting_ticket: ticket_granting_ticket, service: service }
-      let!(:other_service_ticket) { FactoryGirl.create :service_ticket, ticket_granting_ticket: ticket_granting_ticket }
+      let!(:service_ticket) { FactoryBot.create :service_ticket, ticket_granting_ticket: ticket_granting_ticket, service: service }
+      let!(:other_service_ticket) { FactoryBot.create :service_ticket, ticket_granting_ticket: ticket_granting_ticket }
 
       it 'does not change the service tickets count' do
         expect do
@@ -31,8 +31,8 @@ describe CASino::ProcessorConcern::ServiceTickets do
     end
 
     context 'with a service url another ticket-granting ticket has a service ticket for' do
-      let!(:service_ticket) { FactoryGirl.create :service_ticket, ticket_granting_ticket: ticket_granting_ticket, service: service }
-      let!(:other_ticket_granting_ticket) { FactoryGirl.create :ticket_granting_ticket }
+      let!(:service_ticket) { FactoryBot.create :service_ticket, ticket_granting_ticket: ticket_granting_ticket, service: service }
+      let!(:other_ticket_granting_ticket) { FactoryBot.create :ticket_granting_ticket }
 
       it 'does change the service tickets count' do
         expect do

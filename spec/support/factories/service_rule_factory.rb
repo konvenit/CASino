@@ -1,6 +1,6 @@
-require 'factory_girl'
+require 'factory_bot_rails'
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :service_rule, class: CASino::ServiceRule do
     sequence :order do |n|
       n
@@ -10,7 +10,7 @@ FactoryGirl.define do
     end
 
     trait :regex do
-      regex true
+      regex { true }
     end
   end
 end

@@ -97,7 +97,6 @@ class CreateCoreSchema < ActiveRecord::Migration
     create_table :two_factor_authenticators do |t|
       t.integer :user_id,                    :null => false
       t.string  :secret,                     :null => false
-      t.boolean :active,  :default => false, :null => false
 
       t.timestamps
     end

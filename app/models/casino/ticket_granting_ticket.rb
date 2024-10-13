@@ -14,7 +14,7 @@ class CASino::TicketGrantingTicket < ActiveRecord::Base
     end
     tgts = base.where([
       '(created_at < ? AND awaiting_two_factor_authentication = ?) OR (created_at < ? AND long_term = ?) OR created_at < ?',
-      CASino.config.two_factor_authenticator[:timeout].seconds.ago,
+      CASino.config.two_factor_authenticator[:lifetime].seconds.ago,
       true,
       CASino.config.ticket_granting_ticket[:lifetime].seconds.ago,
       false,
@@ -45,13 +45,13 @@ class CASino::TicketGrantingTicket < ActiveRecord::Base
 
   def expired?
     if awaiting_two_factor_authentication?
-      lifetime = CASino.config.two_factor_authenticator[:timeout]
+      lifetime = CASino.config.two_factor_authenticator[:lifetime]
     elsif long_term?
       lifetime = CASino.config.ticket_granting_ticket[:lifetime_long_term]
     else
       lifetime = CASino.config.ticket_granting_ticket[:lifetime]
     end
-    (Time.now - (self.created_at || Time.now)) > lifetime
+    (Time.current - (self.created_at || Time.current)) > lifetime
   end
 
   def password_expired?

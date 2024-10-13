@@ -18,7 +18,7 @@ class CASino::ServiceTicket::SingleSignOutNotifier
       'xmlns:saml' => 'urn:oasis:names:tc:SAML:2.0:assertion',
       ID: SecureRandom.uuid,
       Version: '2.0',
-      IssueInstant: Time.now do |logout_request|
+      IssueInstant: Time.current do |logout_request|
       logout_request.saml :NameID, '@NOT_USED@'
       logout_request.samlp :SessionIndex, @service_ticket.ticket
     end

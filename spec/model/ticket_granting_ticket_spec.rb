@@ -2,11 +2,11 @@ require 'spec_helper'
 require 'useragent'
 
 describe CASino::TicketGrantingTicket do
-  let(:ticket_granting_ticket) { FactoryGirl.create :ticket_granting_ticket }
-  let(:service_ticket) { FactoryGirl.create :service_ticket, ticket_granting_ticket: ticket_granting_ticket }
+  let(:ticket_granting_ticket) { FactoryBot.create :ticket_granting_ticket }
+  let(:service_ticket) { FactoryBot.create :service_ticket, ticket_granting_ticket: ticket_granting_ticket }
 
   describe '#destroy' do
-    let!(:consumed_service_ticket) { FactoryGirl.create :service_ticket, :consumed, ticket_granting_ticket: ticket_granting_ticket }
+    let!(:consumed_service_ticket) { FactoryBot.create :service_ticket, :consumed, ticket_granting_ticket: ticket_granting_ticket }
 
     context 'when notification for a service ticket fails' do
       before(:each) do
@@ -66,7 +66,7 @@ describe CASino::TicketGrantingTicket do
     end
 
     context 'with a ticket from another user' do
-      let(:other_ticket_granting_ticket) { FactoryGirl.create :ticket_granting_ticket  }
+      let(:other_ticket_granting_ticket) { FactoryBot.create :ticket_granting_ticket  }
 
       it 'should return false' do
         ticket_granting_ticket.same_user?(other_ticket_granting_ticket).should == false
@@ -74,7 +74,7 @@ describe CASino::TicketGrantingTicket do
     end
 
     context 'with a ticket from the same user' do
-      let(:other_ticket_granting_ticket) { FactoryGirl.create :ticket_granting_ticket, user: ticket_granting_ticket.user }
+      let(:other_ticket_granting_ticket) { FactoryBot.create :ticket_granting_ticket, user: ticket_granting_ticket.user }
 
       it 'should return true' do
         ticket_granting_ticket.same_user?(other_ticket_granting_ticket).should == true
@@ -152,14 +152,14 @@ describe CASino::TicketGrantingTicket do
   end
 
   describe '.cleanup' do
-    let!(:other_ticket_granting_ticket) { FactoryGirl.create :ticket_granting_ticket }
+    let!(:other_ticket_granting_ticket) { FactoryBot.create :ticket_granting_ticket }
 
     it 'deletes expired ticket-granting tickets' do
       ticket_granting_ticket.created_at = 25.hours.ago
       ticket_granting_ticket.save!
-      lambda do
+      expect do
         described_class.cleanup
-      end.should change(described_class, :count).by(-1)
+      end.to change(described_class, :count).by(-1)
       described_class.find_by_ticket(ticket_granting_ticket.ticket).should be_falsey
     end
 
@@ -167,18 +167,18 @@ describe CASino::TicketGrantingTicket do
       ticket_granting_ticket.created_at = 9.days.ago
       ticket_granting_ticket.long_term = true
       ticket_granting_ticket.save!
-      lambda do
+      expect do
         described_class.cleanup
-      end.should_not change(described_class, :count)
+      end.to change(described_class, :count).by(0)
     end
 
     it 'does delete expired long-term ticket-granting tickets' do
       ticket_granting_ticket.created_at = 30.days.ago
       ticket_granting_ticket.long_term = true
       ticket_granting_ticket.save!
-      lambda do
+      expect do
         described_class.cleanup
-      end.should change(described_class, :count).by(-1)
+      end.to change(described_class, :count).by(-1)
       described_class.find_by_ticket(ticket_granting_ticket.ticket).should be_falsey
     end
 
@@ -186,18 +186,18 @@ describe CASino::TicketGrantingTicket do
       ticket_granting_ticket.created_at = 2.minutes.ago
       ticket_granting_ticket.awaiting_two_factor_authentication = true
       ticket_granting_ticket.save!
-      lambda do
+      expect do
         described_class.cleanup
-      end.should_not change(described_class, :count)
+      end.to change(described_class, :count).by(0)
     end
 
     it 'does delete expired ticket-granting tickets with pending two-factor authentication' do
       ticket_granting_ticket.created_at = 20.minutes.ago
       ticket_granting_ticket.awaiting_two_factor_authentication = true
       ticket_granting_ticket.save!
-      lambda do
+      expect do
         described_class.cleanup
-      end.should change(described_class, :count).by(-1)
+      end.to change(described_class, :count).by(-1)
       described_class.find_by_ticket(ticket_granting_ticket.ticket).should be_falsey
     end
   end

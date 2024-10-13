@@ -16,7 +16,7 @@ class CASino::LoginCredentialAcceptorProcessor < CASino::Processor
   # * `#invalid_login_ticket` and `#invalid_login_credentials`: The first argument is a LoginTicket.
   #   See {CASino::LoginCredentialRequestorProcessor} for details.
   # * `#service_not_allowed`: The user tried to access a service that this CAS server is not allowed to serve.
-  # * `#two_factor_authentication_pending`: The user should be asked to enter his OTP. The first argument (String) is the ticket-granting ticket. The ticket-granting ticket is not active yet. Use SecondFactorAuthenticatonAcceptor to activate it.
+  # * `#two_factor_authentication_pending`: The user should be asked to enter his OTP. The first argument (String) is the ticket-granting ticket. The ticket-granting ticket is not active yet. Use TwoFactorAuthenticatonAcceptor to activate it.
   #
   # @param [Hash] params parameters supplied by user
   # @param [String] user_agent user-agent delivered by the client
@@ -44,9 +44,10 @@ class CASino::LoginCredentialAcceptorProcessor < CASino::Processor
 
   def user_logged_in(authentication_result)
     long_term = @params[:rememberMe]
-    ticket_granting_ticket = acquire_ticket_granting_ticket(authentication_result, @user_agent, long_term)
+    ticket_granting_ticket = acquire_ticket_granting_ticket(authentication_result: authentication_result, user_agent: @user_agent, long_term: long_term, processor: self)
 
     if ticket_granting_ticket.awaiting_two_factor_authentication? and !ticket_granting_ticket.password_expired? and !(@listener.respond_to?(:disable_two_factor_auth?) and @listener.disable_two_factor_auth?)
+      generate_otp(ticket_granting_ticket)
       @listener.two_factor_authentication_pending(ticket_granting_ticket.ticket)
     else
       begin
