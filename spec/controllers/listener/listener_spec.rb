@@ -7,7 +7,7 @@ describe CASino::Listener do
 
   describe '#password_expired' do
     let(:ticket_granting_ticket) { 'TGT-123' }
-    let(:cookie_expiry_time)     { Time.parse("2022-05-12") }
+    let(:cookie_expiry_time)     { Time.parse("2022-05-12").utc }
     let(:url) { 'http://www.example.com/?ticket=TGT-123' }
 
     context 'when password_expiration_enabled is true' do
@@ -19,7 +19,7 @@ describe CASino::Listener do
       end
 
       it 'should include cookie_expiry_time when exist' do
-        expect(controller).to receive(:redirect_to).with("/password_updates/new?expires=2022-05-12+00%3A00%3A00+%2B0200&service=service&tgt=TGT-123")
+        expect(controller).to receive(:redirect_to).with("/password_updates/new?expires=2022-05-11+22%3A00%3A00+UTC&service=service&tgt=TGT-123")
         listener.password_expired(url, ticket_granting_ticket, cookie_expiry_time)
       end
     end
