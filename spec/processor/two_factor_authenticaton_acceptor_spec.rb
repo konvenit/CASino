@@ -20,7 +20,7 @@ describe CASino::TwoFactorAuthenticationAcceptorProcessor do
       let(:service) { 'http://www.example.com/testing' }
       let(:params) { { tgt: tgt, otp: otp, service: service }}
 
-      context 'with an active authenticator' do
+      context 'with a valid authenticator' do
         let!(:two_factor_authenticator) { FactoryBot.create :two_factor_authenticator, user: user }
 
         context 'with a valid OTP' do
