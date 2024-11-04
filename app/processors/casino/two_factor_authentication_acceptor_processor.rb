@@ -20,7 +20,7 @@ class CASino::TwoFactorAuthenticationAcceptorProcessor < CASino::Processor
     if tgt.nil?
       @listener.user_not_logged_in
     else
-      validation_result = validate_one_time_password(params[:otp], tgt.user.two_factor_authenticator, params[:remember_me]&.to_bool)
+      validation_result = validate_one_time_password(params[:otp], tgt.user.two_factor_authenticator, params[:remember_me])
       if validation_result.success?
         tgt.awaiting_two_factor_authentication = false
         tgt.save!

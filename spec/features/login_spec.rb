@@ -20,10 +20,41 @@ describe 'Login' do
     context 'with valid username and password' do
       before { sign_in }
 
-      it { should_not have_button('Login') }
-      it { should have_content('Zwei-Faktor-Authentifizierung') }
-      it { should have_content('Code') }
-      it { should have_button('Fortfahren') }
+      context "with no active 2fa_authenticator" do
+        it { should_not have_button('Login') }
+        it { should have_content('Zwei-Faktor-Authentifizierung') }
+        it { should have_content('Code') }
+        it { should have_button('Fortfahren') }
+        it { should have_link('Abbrechen') }
+      end
+
+      context "with active 2fa_authenticator and not expired" do
+        before do
+          CASino::TwoFactorAuthenticator.destroy_all
+          FactoryBot.create :two_factor_authenticator, user: CASino::User.last, active: true, expiry: 2.days.from_now
+          sign_in
+        end
+
+        it { should_not have_button('Login') }
+        it { should_not have_content('Zwei-Faktor-Authentifizierung') }
+        it { should_not have_button('Fortfahren') }
+        its(:current_path) { should == sessions_path }
+      end
+
+      context "with active 2fa_authenticator and expired" do
+        before do
+          CASino::TwoFactorAuthenticator.destroy_all
+          FactoryBot.create :two_factor_authenticator, user: CASino::User.last, active: true, expiry: 2.days.ago
+          sign_in
+        end
+
+        it { should_not have_button('Login') }
+        it { should have_content('Zwei-Faktor-Authentifizierung') }
+        it { should have_content('Code') }
+        it { should have_button('Fortfahren') }
+        it { should have_link('Abbrechen') }
+      end
+
 
       context 'when filling in the correct otp' do
         before do
@@ -46,6 +77,13 @@ describe 'Login' do
 
         it { should have_text('Das eingegebene Einmalkennwort ist ungültig.') }
         it { should have_button('Fortfahren') }
+      end
+
+      context 'when cancel otp redirect to login' do
+        before do
+          click_link "Abbrechen"
+        end
+        its(:current_path) { should == "/login" }
       end
     end
   end

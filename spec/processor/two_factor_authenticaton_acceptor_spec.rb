@@ -1,4 +1,5 @@
 require 'spec_helper'
+require "timecop"
 
 describe CASino::TwoFactorAuthenticationAcceptorProcessor do
   describe '#process' do
@@ -21,7 +22,7 @@ describe CASino::TwoFactorAuthenticationAcceptorProcessor do
       let(:params) { { tgt: tgt, otp: otp, service: service }}
 
       context 'with a valid authenticator' do
-        let!(:two_factor_authenticator) { FactoryBot.create :two_factor_authenticator, user: user }
+        let!(:two_factor_authenticator) { FactoryBot.create :two_factor_authenticator, user: user, active: false }
 
         context 'with a valid OTP' do
           before(:each) do
@@ -37,6 +38,27 @@ describe CASino::TwoFactorAuthenticationAcceptorProcessor do
             processor.process(params, user_agent)
             ticket_granting_ticket.reload
             ticket_granting_ticket.should_not be_awaiting_two_factor_authentication
+          end
+
+          it "activate two_factor_authenticator" do
+            processor.process(params, user_agent)
+            expect(two_factor_authenticator.reload.active).to be_truthy
+          end
+
+          it "should update expiry with remember_me_period if remember_me is checked" do
+            current_time = Time.current.change(sec: 0)
+            Timecop.freeze(current_time) do
+              processor.process(params.merge(remember_me: "1"), user_agent)
+              expect(two_factor_authenticator.reload.expiry).to eq CASino.config.two_factor_authenticator[:remember_me_period].seconds.from_now
+            end
+          end
+
+          it "should update expiry with current time if remember_me is not checked" do
+            current_time = Time.current.change(sec: 0)
+            Timecop.freeze(current_time) do
+              processor.process(params, user_agent)
+              expect(two_factor_authenticator.reload.expiry).to eq current_time
+            end
           end
 
           context 'with a long-term ticket-granting ticket' do
@@ -77,6 +99,11 @@ describe CASino::TwoFactorAuthenticationAcceptorProcessor do
             processor.process(params, user_agent)
             ticket_granting_ticket.reload
             ticket_granting_ticket.should be_awaiting_two_factor_authentication
+          end
+
+          it "does not activate two_factor_authenticator" do
+            processor.process(params, user_agent)
+            expect(two_factor_authenticator.reload.active).to be_falsey
           end
         end
       end

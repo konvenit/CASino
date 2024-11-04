@@ -83,7 +83,7 @@ describe CASino::LoginCredentialAcceptorProcessor do
 
         context 'with two-factor authentication enabled' do
           let!(:user) { CASino::User.create! username: username, authenticator: authenticator }
-          let!(:two_factor_authenticator) { FactoryBot.create :two_factor_authenticator, user: user }
+          let!(:two_factor_authenticator) { FactoryBot.create :two_factor_authenticator, user: user, active: false }
 
           before do
             stub_const("Proxies::LoginOTP", Class.new)
@@ -113,6 +113,13 @@ describe CASino::LoginCredentialAcceptorProcessor do
           it 'should not call two_factor_authentication_pending and call listener user_logged_in when password is not expired' do
             allow(listener).to receive(:disable_two_factor_auth?).and_return true
             allow_any_instance_of(CASino::TicketGrantingTicket).to receive(:password_expired?).and_return false
+            expect(listener).to receive(:user_logged_in)
+            expect(listener).to_not receive(:two_factor_authentication_pending)
+            processor.process(login_data)
+          end
+
+          it 'should not call two_factor_authentication_pending and call listener user_logged_in when 2fa_authenticator is active and not expired' do
+            two_factor_authenticator.update!(active: true, expiry: 2.days.from_now)
             expect(listener).to receive(:user_logged_in)
             expect(listener).to_not receive(:two_factor_authentication_pending)
             processor.process(login_data)
