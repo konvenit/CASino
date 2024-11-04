@@ -31,14 +31,17 @@ module CASino
       def acquire_ticket_granting_ticket(authentication_result:, user_agent: nil, long_term: nil, processor: nil)
         user_data = authentication_result[:user_data]
         user = load_or_initialize_user(authentication_result[:authenticator], user_data[:username], user_data[:extra_attributes])
-        cleanup_expired_ticket_granting_tickets(user)
 
-        user.cleanup_two_factor_authenticator
-        generate_two_factor_authenticator(user, processor) if processor
+        cleanup_expired_ticket_granting_tickets(user)
+        user.cleanup_expired_two_factor_authenticator
+
+        generate_two_factor_authenticator(user, processor) if processor && user.two_factor_authenticator.blank?
+
+        awaiting_two_factor_authentication =  user.two_factor_authenticator.present? && !user.two_factor_authenticator.active?
 
         user.ticket_granting_tickets.create!({
           ticket: random_ticket_string('TGC'),
-          awaiting_two_factor_authentication: user.two_factor_authenticator.present?,
+          awaiting_two_factor_authentication: awaiting_two_factor_authentication,
           user_agent: user_agent,
           long_term: !!long_term
         })

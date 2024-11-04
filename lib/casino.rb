@@ -40,7 +40,8 @@ module CASino
       lifetime_consumed: 86400
     },
     two_factor_authenticator: {
-      lifetime: 360
+      lifetime: 360,
+      remember_me_period: 1209600 # 2 weeks
     }
   }
 

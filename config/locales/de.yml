@@ -16,6 +16,8 @@ de:
     description: "Bitte geben Sie ein gültiges Einmalkennwort an."
     code: "Code"
     submit: "Fortfahren"
+    cancel: "Abbrechen"
+    remember_me: "Für zwei Wochen merken"
     invalid_otp: "Das eingegebene Einmalkennwort ist ungültig."
   logout:
     title: "Auf Wiedersehen."

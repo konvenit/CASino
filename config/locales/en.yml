@@ -16,6 +16,8 @@ en:
     description: "Please enter a valid one-time password."
     code: "Code"
     submit: "Continue"
+    cancel: "Cancel"
+    remember_me: "Remember for two weeks"
     invalid_otp: "The one-time password you entered is not correct."
   logout:
     title: "Bye."

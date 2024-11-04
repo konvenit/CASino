@@ -87,6 +87,8 @@ ActiveRecord::Schema.define(:version => 20130910094259) do
   create_table "casino_two_factor_authenticators", :force => true do |t|
     t.integer  "user_id",                       :null => false
     t.string   "secret",                        :null => false
+    t.boolean  "active",     :default => false, :null => false
+    t.datetime "expiry",                        :null => false
     t.datetime "created_at",                    :null => false
     t.datetime "updated_at",                    :null => false
   end
