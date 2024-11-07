@@ -14,10 +14,10 @@ en:
   validate_otp:
     title: "Two-factor authentication"
     description: "Please enter a valid one-time password."
-    code: "Code"
+    code: "To protect your data, we have sent you a verification code via email. Please check your inbox and enter the code here to complete the log in process."
     submit: "Continue"
     cancel: "Cancel"
-    remember_me: "Remember for two weeks"
+    remember_me: "Remember this code for 14 days"
     invalid_otp: "The one-time password you entered is not correct."
   logout:
     title: "Bye."

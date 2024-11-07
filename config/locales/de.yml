@@ -14,10 +14,10 @@ de:
   validate_otp:
     title: "Zwei-Faktor-Authentifizierung"
     description: "Bitte geben Sie ein gültiges Einmalkennwort an."
-    code: "Code"
+    code: "Um Ihre Daten zu schützen, haben wir Ihnen einen Bestätigungscode per E-Mail gesendet. Bitte überprüfen Sie Ihren Posteingang und geben Sie den Code hier ein, um den Anmeldevorgang abzuschließen."
     submit: "Fortfahren"
     cancel: "Abbrechen"
-    remember_me: "Für zwei Wochen merken"
+    remember_me: "Diesen Code für 14 Tage merken"
     invalid_otp: "Das eingegebene Einmalkennwort ist ungültig."
   logout:
     title: "Auf Wiedersehen."
