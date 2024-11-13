@@ -17,7 +17,7 @@ en:
     code: "To protect your data, we have sent you a verification code via email. Please check your inbox and enter the code here to complete the log in process."
     submit: "Continue"
     cancel: "Cancel"
-    remember_me: "Remember this code for 14 days"
+    remember_me: "Remember this code for 30 days"
     invalid_otp: "The one-time password you entered is not correct."
   logout:
     title: "Bye."

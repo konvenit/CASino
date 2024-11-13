@@ -5,7 +5,7 @@ class CASino::User < ActiveRecord::Base
   has_one  :two_factor_authenticator
 
   def cleanup_expired_two_factor_authenticator
-    return unless two_factor_authenticator&.expired?
+    return if !two_factor_authenticator&.expired? && two_factor_authenticator&.active?
     two_factor_authenticator&.destroy
     reload
   end

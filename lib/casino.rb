@@ -41,7 +41,7 @@ module CASino
     },
     two_factor_authenticator: {
       lifetime: 360,
-      remember_me_period: 1209600 # 2 weeks
+      remember_me_period: 2592000 # 30 days
     }
   }
 
