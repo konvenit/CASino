@@ -77,7 +77,7 @@ class CreateBaseModels < ActiveRecord::Migration
       t.integer  :user_id,                    :null => false
       t.string   :secret,                     :null => false
       t.boolean  :active,  :default => false, :null => false
-      t.datetime :expiry,                     :null => false
+      t.datetime :expiry_at,                  :null => false
 
       t.timestamps
     end

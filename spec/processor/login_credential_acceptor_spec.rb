@@ -119,7 +119,7 @@ describe CASino::LoginCredentialAcceptorProcessor do
           end
 
           it 'should not call two_factor_authentication_pending and call listener user_logged_in when 2fa_authenticator is active and not expired' do
-            two_factor_authenticator = FactoryBot.create :two_factor_authenticator, user: user, active: true, expiry: 2.days.from_now
+            two_factor_authenticator = FactoryBot.create :two_factor_authenticator, user: user, active: true, expiry_at: 2.days.from_now
             expect(listener).to receive(:user_logged_in)
             expect(listener).to_not receive(:two_factor_authentication_pending)
             processor.process(login_data)

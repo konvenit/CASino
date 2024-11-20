@@ -31,7 +31,7 @@ describe 'Login' do
       context "with active 2fa_authenticator and not expired" do
         before do
           CASino::TwoFactorAuthenticator.destroy_all
-          FactoryBot.create :two_factor_authenticator, user: CASino::User.last, active: true, expiry: 2.days.from_now
+          FactoryBot.create :two_factor_authenticator, user: CASino::User.last, active: true, expiry_at: 2.days.from_now
           sign_in
         end
 
@@ -44,7 +44,7 @@ describe 'Login' do
       context "with active 2fa_authenticator and expired" do
         before do
           CASino::TwoFactorAuthenticator.destroy_all
-          FactoryBot.create :two_factor_authenticator, user: CASino::User.last, active: true, expiry: 2.days.ago
+          FactoryBot.create :two_factor_authenticator, user: CASino::User.last, active: true, expiry_at: 2.days.ago
           sign_in
         end
 

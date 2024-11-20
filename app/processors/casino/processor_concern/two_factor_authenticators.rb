@@ -13,9 +13,9 @@ module CASino
           totp = ROTP::TOTP.new(authenticator.secret, interval: CASino.config.two_factor_authenticator[:lifetime])
           if totp.verify(otp)
             if [true, "true", "1", 1].any? { |i| remember_me == i }
-              authenticator.update!(active: true, expiry: CASino.config.two_factor_authenticator[:remember_me_period].seconds.from_now)
+              authenticator.update!(active: true, expiry_at: CASino.config.two_factor_authenticator[:remember_me_period].seconds.from_now)
             else
-              authenticator.update!(active: true, expiry: Time.current)
+              authenticator.update!(active: true, expiry_at: Time.current)
             end
             ValidationResult.new
           else

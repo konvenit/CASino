@@ -2,7 +2,7 @@ class CASino::TwoFactorAuthenticator < ActiveRecord::Base
   belongs_to :user
 
   def self.cleanup
-    where('(expiry < ?)', Time.current).delete_all
+    where('(expiry_at < ?)', Time.current).delete_all
   end
 
   def self.lifetime
@@ -10,6 +10,6 @@ class CASino::TwoFactorAuthenticator < ActiveRecord::Base
   end
 
   def expired?
-    Time.current > self.expiry
+    Time.current > self.expiry_at
   end
 end

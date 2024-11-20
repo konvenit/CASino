@@ -49,7 +49,7 @@ describe CASino::TwoFactorAuthenticationAcceptorProcessor do
             current_time = Time.current.change(sec: 0)
             Timecop.freeze(current_time) do
               processor.process(params.merge(remember_me: "1"), user_agent)
-              expect(two_factor_authenticator.reload.expiry).to eq CASino.config.two_factor_authenticator[:remember_me_period].seconds.from_now
+              expect(two_factor_authenticator.reload.expiry_at).to eq CASino.config.two_factor_authenticator[:remember_me_period].seconds.from_now
             end
           end
 
@@ -57,7 +57,7 @@ describe CASino::TwoFactorAuthenticationAcceptorProcessor do
             current_time = Time.current.change(sec: 0)
             Timecop.freeze(current_time) do
               processor.process(params, user_agent)
-              expect(two_factor_authenticator.reload.expiry).to eq current_time
+              expect(two_factor_authenticator.reload.expiry_at).to eq current_time
             end
           end
 
