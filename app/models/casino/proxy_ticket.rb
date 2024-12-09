@@ -19,6 +19,6 @@ class CASino::ProxyTicket < ActiveRecord::Base
     else
       CASino.config.proxy_ticket[:lifetime_unconsumed]
     end
-    (Time.now - (self.created_at || Time.now)) > lifetime
+    (Time.current - (self.created_at || Time.current)) > lifetime
   end
 end

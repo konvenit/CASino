@@ -74,9 +74,10 @@ class CreateBaseModels < ActiveRecord::Migration
 
     # Two Factor Authenticators
     create_table :casino_two_factor_authenticators do |t|
-      t.integer :user_id,                    :null => false
-      t.string  :secret,                     :null => false
-      t.boolean :active,  :default => false, :null => false
+      t.integer  :user_id,                    :null => false
+      t.string   :secret,                     :null => false
+      t.boolean  :active,  :default => false, :null => false
+      t.datetime :expiry_at,                  :null => false
 
       t.timestamps
     end

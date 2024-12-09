@@ -1,8 +1,9 @@
 require 'spec_helper'
+require "timecop"
 
-describe CASino::SecondFactorAuthenticationAcceptorProcessor do
+describe CASino::TwoFactorAuthenticationAcceptorProcessor do
   describe '#process' do
-    let(:listener) { Object.new }
+    let(:listener) { Struct.new(:controller).new(controller: Object.new) }
     let(:processor) { described_class.new(listener) }
 
     before(:each) do
@@ -12,7 +13,7 @@ describe CASino::SecondFactorAuthenticationAcceptorProcessor do
     end
 
     context 'with an existing ticket-granting ticket' do
-      let(:ticket_granting_ticket) { FactoryGirl.create :ticket_granting_ticket, :awaiting_two_factor_authentication }
+      let(:ticket_granting_ticket) { FactoryBot.create :ticket_granting_ticket, :awaiting_two_factor_authentication }
       let(:user) { ticket_granting_ticket.user }
       let(:tgt) { ticket_granting_ticket.ticket }
       let(:user_agent) { ticket_granting_ticket.user_agent }
@@ -20,12 +21,12 @@ describe CASino::SecondFactorAuthenticationAcceptorProcessor do
       let(:service) { 'http://www.example.com/testing' }
       let(:params) { { tgt: tgt, otp: otp, service: service }}
 
-      context 'with an active authenticator' do
-        let!(:two_factor_authenticator) { FactoryGirl.create :two_factor_authenticator, user: user }
+      context 'with a valid authenticator' do
+        let!(:two_factor_authenticator) { FactoryBot.create :two_factor_authenticator, user: user, active: false }
 
         context 'with a valid OTP' do
           before(:each) do
-            ROTP::TOTP.any_instance.should_receive(:verify_with_drift).with(otp, 30).and_return(true)
+            ROTP::TOTP.any_instance.should_receive(:verify).with(otp).and_return(true)
           end
 
           it 'calls the `#user_logged_in` method an the listener' do
@@ -37,6 +38,27 @@ describe CASino::SecondFactorAuthenticationAcceptorProcessor do
             processor.process(params, user_agent)
             ticket_granting_ticket.reload
             ticket_granting_ticket.should_not be_awaiting_two_factor_authentication
+          end
+
+          it "activate two_factor_authenticator" do
+            processor.process(params, user_agent)
+            expect(two_factor_authenticator.reload.active).to be_truthy
+          end
+
+          it "should update expiry with remember_me_period if remember_me is checked" do
+            current_time = Time.current.change(sec: 0)
+            Timecop.freeze(current_time) do
+              processor.process(params.merge(remember_me: "1"), user_agent)
+              expect(two_factor_authenticator.reload.expiry_at).to eq CASino.config.two_factor_authenticator[:remember_me_period].seconds.from_now
+            end
+          end
+
+          it "should update expiry with current time if remember_me is not checked" do
+            current_time = Time.current.change(sec: 0)
+            Timecop.freeze(current_time) do
+              processor.process(params, user_agent)
+              expect(two_factor_authenticator.reload.expiry_at).to eq current_time
+            end
           end
 
           context 'with a long-term ticket-granting ticket' do
@@ -52,7 +74,7 @@ describe CASino::SecondFactorAuthenticationAcceptorProcessor do
 
           context 'with a not allowed service' do
             before(:each) do
-              FactoryGirl.create :service_rule, :regex, url: '^https://.*'
+              FactoryBot.create :service_rule, :regex, url: '^https://.*'
             end
             let(:service) { 'http://www.example.org/' }
 
@@ -65,7 +87,7 @@ describe CASino::SecondFactorAuthenticationAcceptorProcessor do
 
         context 'with an invalid OTP' do
           before(:each) do
-            ROTP::TOTP.any_instance.should_receive(:verify_with_drift).with(otp, 30).and_return(false)
+            ROTP::TOTP.any_instance.should_receive(:verify).with(otp).and_return(false)
           end
 
           it 'calls the `#invalid_one_time_password` method an the listener' do
@@ -77,6 +99,11 @@ describe CASino::SecondFactorAuthenticationAcceptorProcessor do
             processor.process(params, user_agent)
             ticket_granting_ticket.reload
             ticket_granting_ticket.should be_awaiting_two_factor_authentication
+          end
+
+          it "does not activate two_factor_authenticator" do
+            processor.process(params, user_agent)
+            expect(two_factor_authenticator.reload.active).to be_falsey
           end
         end
       end

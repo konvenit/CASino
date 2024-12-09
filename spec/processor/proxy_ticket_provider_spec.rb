@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe CASino::ProxyTicketProviderProcessor do
   describe '#process' do
-    let(:listener) { Object.new }
+    let(:listener) { Struct.new(:controller).new(controller: Object.new) }
     let(:processor) { described_class.new(listener) }
     let(:params) { { targetService: 'this_does_not_have_to_be_a_url' } }
 
@@ -18,9 +18,9 @@ describe CASino::ProxyTicketProviderProcessor do
       end
 
       it 'does not create a proxy ticket' do
-        lambda do
+        expect do
           processor.process(params)
-        end.should_not change(CASino::ProxyTicket, :count)
+        end.to change(CASino::ProxyTicket, :count).by(0)
       end
     end
 
@@ -33,14 +33,14 @@ describe CASino::ProxyTicketProviderProcessor do
       end
 
       it 'does not create a proxy ticket' do
-        lambda do
+        expect do
           processor.process(params_with_deleted_pgt)
-        end.should_not change(CASino::ProxyTicket, :count)
+        end.to change(CASino::ProxyTicket, :count).by(0)
       end
     end
 
     context 'with a proxy-granting ticket' do
-      let(:proxy_granting_ticket) { FactoryGirl.create :proxy_granting_ticket }
+      let(:proxy_granting_ticket) { FactoryBot.create :proxy_granting_ticket }
       let(:params_with_valid_pgt) { params.merge(pgt: proxy_granting_ticket.ticket) }
 
       it 'calls the #request_succeeded method on the listener' do
@@ -49,9 +49,9 @@ describe CASino::ProxyTicketProviderProcessor do
       end
 
       it 'does not create a proxy ticket' do
-        lambda do
+        expect do
           processor.process(params_with_valid_pgt)
-        end.should change(proxy_granting_ticket.proxy_tickets, :count).by(1)
+        end.to change(proxy_granting_ticket.proxy_tickets, :count).by(1)
       end
 
       it 'includes the proxy ticket in the response' do

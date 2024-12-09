@@ -8,7 +8,7 @@ module CASino
 
       def find_valid_ticket_granting_ticket(tgt, user_agent, ignore_two_factor = false)
         ticket_granting_ticket = CASino::TicketGrantingTicket.where(ticket: tgt).first
-        unless ticket_granting_ticket.nil?
+        if ticket_granting_ticket.present?
           if ticket_granting_ticket.expired?
             Rails.logger.info "Ticket-granting ticket expired (Created: #{ticket_granting_ticket.created_at})"
             ticket_granting_ticket.destroy
@@ -28,13 +28,20 @@ module CASino
         end
       end
 
-      def acquire_ticket_granting_ticket(authentication_result, user_agent = nil, long_term = nil)
+      def acquire_ticket_granting_ticket(authentication_result:, user_agent: nil, long_term: nil, processor: nil)
         user_data = authentication_result[:user_data]
         user = load_or_initialize_user(authentication_result[:authenticator], user_data[:username], user_data[:extra_attributes])
+
         cleanup_expired_ticket_granting_tickets(user)
+        user.cleanup_expired_two_factor_authenticator
+
+        generate_two_factor_authenticator(user, processor) if processor && user.two_factor_authenticator.blank?
+
+        awaiting_two_factor_authentication =  user.two_factor_authenticator.present? && !user.two_factor_authenticator.active?
+
         user.ticket_granting_tickets.create!({
           ticket: random_ticket_string('TGC'),
-          awaiting_two_factor_authentication: !user.active_two_factor_authenticator.nil?,
+          awaiting_two_factor_authentication: awaiting_two_factor_authentication,
           user_agent: user_agent,
           long_term: !!long_term
         })
@@ -60,6 +67,22 @@ module CASino
         CASino::TicketGrantingTicket.cleanup(user)
       end
 
+      def generate_two_factor_authenticator(user, processor)
+        return if processor.listener.respond_to?(:disable_two_factor_auth?) && processor.listener.disable_two_factor_auth?
+
+        two_fa_listener  = CASino::TwoFactorAuthenticatorRegistratorListener.new(processor.listener.controller)
+        two_fa_processor = CASino::TwoFactorAuthenticatorRegistratorProcessor.new(two_fa_listener)
+        two_fa_processor.process(user)
+      end
+
+      def generate_otp(ticket_granting_ticket)
+        authenticator = ticket_granting_ticket.user.two_factor_authenticator
+        totp = ROTP::TOTP.new(authenticator.secret, interval: CASino.config.two_factor_authenticator[:lifetime])
+
+        otp_value = totp.now
+        login_otp_proxy = Proxies::LoginOTP.new(otp: otp_value, person_id: ticket_granting_ticket.user.extra_attributes[:person_id])
+        Notifikator.generate :login_2fa_auth, login_otp: login_otp_proxy
+      end
     end
   end
 end

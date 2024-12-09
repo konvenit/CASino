@@ -88,6 +88,7 @@ ActiveRecord::Schema.define(:version => 20130910094259) do
     t.integer  "user_id",                       :null => false
     t.string   "secret",                        :null => false
     t.boolean  "active",     :default => false, :null => false
+    t.datetime "expiry_at",                     :null => false
     t.datetime "created_at",                    :null => false
     t.datetime "updated_at",                    :null => false
   end

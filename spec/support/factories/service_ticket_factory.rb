@@ -1,6 +1,6 @@
-require 'factory_girl'
+require 'factory_bot_rails'
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :service_ticket, class: CASino::ServiceTicket do
     ticket_granting_ticket
     sequence :ticket do |n|
@@ -11,7 +11,7 @@ FactoryGirl.define do
     end
 
     trait :consumed do
-      consumed true
+      consumed { true }
     end
   end
 end

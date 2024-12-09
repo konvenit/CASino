@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe CASino::API::ServiceTicketProviderProcessor do
   describe '#process' do
-    let(:listener) { Object.new }
+    let(:listener) { Struct.new(:controller).new(controller: Object.new) }
     let(:processor) { described_class.new(listener) }
 
     let(:service) { 'http://example.org/' }
@@ -18,13 +18,13 @@ describe CASino::API::ServiceTicketProviderProcessor do
     end
 
     context 'with a valid ticket-granting ticket' do
-      let(:ticket_granting_ticket) { FactoryGirl.create(:ticket_granting_ticket) }
+      let(:ticket_granting_ticket) { FactoryBot.create(:ticket_granting_ticket) }
       let(:ticket) { ticket_granting_ticket.ticket }
       let(:user_agent) { ticket_granting_ticket.user_agent }
 
       context 'with a not allowed service' do
         before(:each) do
-          FactoryGirl.create :service_rule, :regex, url: '^https://.*'
+          FactoryBot.create :service_rule, :regex, url: '^https://.*'
         end
         let(:service) { 'http://www.example.org/' }
 

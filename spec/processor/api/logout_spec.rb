@@ -2,11 +2,11 @@ require 'spec_helper'
 
 describe CASino::API::LogoutProcessor do
   describe '#process' do
-    let(:listener) { Object.new }
+    let(:listener) { Struct.new(:controller).new(controller: Object.new) }
     let(:processor) { described_class.new(listener) }
 
     context 'with an existing ticket-granting ticket' do
-      let(:ticket_granting_ticket) { FactoryGirl.create(:ticket_granting_ticket) }
+      let(:ticket_granting_ticket) { FactoryBot.create(:ticket_granting_ticket) }
       let(:user_agent) { ticket_granting_ticket.user_agent }
 
       it 'deletes the ticket-granting ticket' do

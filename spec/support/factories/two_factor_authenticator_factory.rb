@@ -1,16 +1,12 @@
-require 'factory_girl'
+require 'factory_bot_rails'
 require 'rotp'
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :two_factor_authenticator, class: CASino::TwoFactorAuthenticator do
     user
     secret do
       ROTP::Base32.random_base32
     end
-    active true
-
-    trait :inactive do
-      active false
-    end
+    expiry_at { CASino::TwoFactorAuthenticator.lifetime.from_now }
   end
 end
