@@ -17,25 +17,26 @@ describe CASino::TwoFactorAuthenticationAcceptorListener do
   end
 
   describe '#user_logged_in' do
-    let(:ticket_granting_ticket) { 'TGT-123' }
+    let(:ticket) { 'TGT-123' }
+    let!(:ticket_granting_ticket) { FactoryBot.create :ticket_granting_ticket, ticket: ticket }
     context 'with a service url' do
       let(:url) { 'http://www.example.com/?ticket=ST-123' }
       it 'tells the controller to redirect the client' do
         controller.should_receive(:redirect_to).with(url, status: :see_other, allow_other_host: true)
-        listener.user_logged_in(url, ticket_granting_ticket)
+        listener.user_logged_in(url, ticket)
       end
     end
 
     context 'without a service url' do
       let(:url) { nil }
       it 'tells the controller to redirect to the session overview' do
-        controller.should_receive(:redirect_to).with(sessions_path, status: :see_other)
-        listener.user_logged_in(url, ticket_granting_ticket)
+        controller.should_receive(:redirect_to).with(sessions_path, status: :see_other, allow_other_host: true)
+        listener.user_logged_in(url, ticket)
       end
 
       it 'creates the tgt cookie' do
-        listener.user_logged_in(url, ticket_granting_ticket)
-        controller.cookies[:tgt].should == { value: ticket_granting_ticket, expires: nil, httponly: true }
+        listener.user_logged_in(url, ticket)
+        controller.cookies[:tgt].should == { value: ticket, expires: nil, httponly: true }
       end
     end
   end
