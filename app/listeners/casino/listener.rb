@@ -18,6 +18,18 @@ module CASino
       end
     end
 
+    def assign_session_token(person)
+      if person.session_token.blank?
+        begin
+          person.update_column :session_token, SecureRandom.hex(64)
+        rescue ActiveRecord::RecordNotUnique
+          retry
+        end
+      end
+
+      @controller.session[:session_token] = person.session_token
+    end
+
     protected
     def assign(name, value)
       @controller.instance_variable_set("@#{name}", value)

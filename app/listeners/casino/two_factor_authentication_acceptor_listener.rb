@@ -11,6 +11,12 @@ class CASino::TwoFactorAuthenticationAcceptorListener < CASino::Listener
     tgt_cookie[:secure] = true unless Rails.env.test?
 
     @controller.cookies[:tgt] = tgt_cookie
+
+    ticket = CASino::TicketGrantingTicket.find_by_ticket(ticket_granting_ticket)
+    person = Person.find(ticket.user.person_id)
+
+    assign_session_token(person)
+
     if url.nil?
       @controller.redirect_to sessions_path, status: :see_other
     else

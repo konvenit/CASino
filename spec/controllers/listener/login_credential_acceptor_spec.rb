@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe CASino::LoginCredentialAcceptorListener do
   include CASino::Engine.routes.url_helpers
-  let(:controller) { Struct.new(:cookies).new(cookies: {}) }
+  let(:controller) { OpenStruct.new(cookies: {}, session: {}) }
   let(:listener) { described_class.new(controller) }
 
   before(:each) do
@@ -10,12 +10,13 @@ describe CASino::LoginCredentialAcceptorListener do
   end
 
   describe '#user_logged_in' do
-    let(:ticket_granting_ticket) { 'TGT-123' }
+    let(:ticket) { 'TGT-123' }
+    let!(:ticket_granting_ticket) { FactoryBot.create :ticket_granting_ticket, ticket: ticket }
     context 'with a service url' do
       let(:url) { 'http://www.example.com/?ticket=ST-123' }
       it 'tells the controller to redirect the client' do
         controller.should_receive(:redirect_to).with(url, status: :see_other, allow_other_host: true)
-        listener.user_logged_in(url, ticket_granting_ticket)
+        listener.user_logged_in(url, ticket)
       end
     end
 
@@ -23,12 +24,12 @@ describe CASino::LoginCredentialAcceptorListener do
       let(:url) { nil }
       it 'tells the controller to redirect to the session overview' do
         controller.should_receive(:redirect_to).with(sessions_path, status: :see_other)
-        listener.user_logged_in(url, ticket_granting_ticket)
+        listener.user_logged_in(url, ticket)
       end
 
       it 'creates the tgt cookie' do
-        listener.user_logged_in(url, ticket_granting_ticket)
-        controller.cookies[:tgt][:value].should == ticket_granting_ticket
+        listener.user_logged_in(url, ticket)
+        controller.cookies[:tgt][:value].should == ticket
       end
     end
 
@@ -36,8 +37,8 @@ describe CASino::LoginCredentialAcceptorListener do
       let(:url) { Object.new }
       let(:expiry_time) { Time.current }
       it 'set the tgt cookie expiry time' do
-        listener.user_logged_in(url, ticket_granting_ticket, expiry_time)
-        controller.cookies[:tgt][:value].should == ticket_granting_ticket
+        listener.user_logged_in(url, ticket, expiry_time)
+        controller.cookies[:tgt][:value].should == ticket
         controller.cookies[:tgt][:expires].should == expiry_time
       end
     end

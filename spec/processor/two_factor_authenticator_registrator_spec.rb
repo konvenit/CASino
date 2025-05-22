@@ -13,7 +13,7 @@ describe CASino::TwoFactorAuthenticatorRegistratorProcessor do
     before(:each) do
       listener.stub(:user_not_logged_in)
       listener.stub(:two_factor_authenticator_registered)
-      allow(Person).to receive(:find).and_return(OpenStruct.new(allow_2fa_auth?: true))
+      allow(Person).to receive(:find).and_return(OpenStruct.new(allow_2fa_auth?: true, session_token: "01234567899876543210"))
     end
 
     it 'creates exactly one authenticator' do

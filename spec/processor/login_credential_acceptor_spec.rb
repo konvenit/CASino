@@ -85,7 +85,7 @@ describe CASino::LoginCredentialAcceptorProcessor do
           let!(:user) { CASino::User.create! username: username, authenticator: authenticator }
 
           before do
-            allow(Person).to receive(:find).and_return(OpenStruct.new(allow_2fa_auth?: true))
+            allow(Person).to receive(:find).and_return(OpenStruct.new(allow_2fa_auth?: true, session_token: "01234567899876543210"))
             stub_const("Proxies::LoginOTP", Class.new)
             stub_const("Notifikator", Class.new)
             allow(Proxies::LoginOTP).to receive(:new).and_return(OpenStruct.new(otp: "898989", person_id: 123))
