@@ -11,10 +11,11 @@ class CASino::LoginCredentialAcceptorListener < CASino::Listener
     ticket = CASino::TicketGrantingTicket.find_by_ticket(ticket_granting_ticket)
     person = Person.find(ticket.user.person_id)
 
-    if person.employee? || person.phone_extension.present?
-      @controller.redirect_to redirect_url(url), status: :see_other, allow_other_host: true
-    else
+    if person.employee? && person.info_outdated?
+      person.log_info_check
       @controller.redirect_to @controller.update_person_info_people_path(ref: redirect_url(url)), status: :see_other
+    else
+      @controller.redirect_to redirect_url(url), status: :see_other, allow_other_host: true
     end
   end
 
