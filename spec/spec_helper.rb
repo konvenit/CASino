@@ -20,6 +20,7 @@ Dir[File.join(ENGINE_RAILS_ROOT, 'spec/support/**/*.rb')].each {|f| require f }
 
 RSpec.configure do |config|
   config.before(:each) do
+    Rails.cache.clear
     stub_const("Person", Class.new)
     allow(Person).to receive(:find).and_return(OpenStruct.new(allow_2fa_auth?: false))
   end

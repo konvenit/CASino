@@ -1,6 +1,8 @@
 class CASino::SessionsController < CASino::ApplicationController
   include CASino::SessionsHelper
 
+  rate_limit to: 5, within: 5.minutes, with: -> { render_429("validate_otp") }, only: :validate_otp
+
   def index
     processor(:SessionOverview).process(cookies, request.user_agent)
   end

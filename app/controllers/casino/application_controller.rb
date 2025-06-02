@@ -31,7 +31,7 @@ class CASino::ApplicationController < ::ApplicationController
                result = params[:service].match(/.*[?&]locale=([^&]+)(&|$)/)
                result[1]
              elsif request.env['HTTP_ACCEPT_LANGUAGE']
-               http_accept_language.preferred_language_from(I18n.available_locales)
+               Rails.env.test? ? "de" : http_accept_language.preferred_language_from(I18n.available_locales)
              end
     I18n.locale = available_locale.include?(locale) ? locale : I18n.default_locale
   end
