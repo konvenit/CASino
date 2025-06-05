@@ -22,6 +22,6 @@ RSpec.configure do |config|
   config.before(:each) do
     Rails.cache.clear
     stub_const("Person", Class.new)
-    allow(Person).to receive(:find).and_return(OpenStruct.new(allow_2fa_auth?: false))
+    allow(Person).to receive(:find).and_return(OpenStruct.new(employee?: true, allow_2fa_auth?: false))
   end
 end

@@ -18,6 +18,10 @@ module CASino
       end
     end
 
+    def redirect_url(url = nil)
+      url.presence || sessions_path
+    end
+
     protected
     def assign(name, value)
       @controller.instance_variable_set("@#{name}", value)

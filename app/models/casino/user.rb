@@ -9,4 +9,8 @@ class CASino::User < ActiveRecord::Base
     two_factor_authenticator&.destroy
     reload
   end
+
+  def person_id
+    extra_attributes[:person_id]
+  end
 end

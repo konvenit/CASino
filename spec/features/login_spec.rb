@@ -10,7 +10,7 @@ describe 'Login' do
 
   context 'with two-factor authentication enabled' do
     before do
-      allow(Person).to receive(:find).and_return(OpenStruct.new(allow_2fa_auth?: true))
+      allow(Person).to receive(:find).and_return(OpenStruct.new(employee?: true, allow_2fa_auth?: true))
       stub_const("Proxies::LoginOTP", Class.new)
       stub_const("Notifikator", Class.new)
       allow(Proxies::LoginOTP).to receive(:new).and_return(OpenStruct.new(otp: "898989", person_id: 123))
@@ -89,7 +89,7 @@ describe 'Login' do
   end
 
   context 'with two-factor authentication disabled' do
-    before { allow(Person).to receive(:find).and_return(OpenStruct.new(allow_2fa_auth?: false)) }
+    before { allow(Person).to receive(:find).and_return(OpenStruct.new(employee?: true, allow_2fa_auth?: false)) }
 
     context 'with valid username and password' do
       before { sign_in }

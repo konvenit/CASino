@@ -6,6 +6,6 @@ FactoryBot.define do
     sequence(:username) do |n|
       "test#{n}"
     end
-    extra_attributes { { fullname: "Test User", age: 15, roles: [:user] } }
+    extra_attributes { { person_id: 1, fullname: "Test User", age: 15, roles: [:user] } }
   end
 end
