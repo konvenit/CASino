@@ -20,7 +20,8 @@ class CASino::TwoFactorAuthenticationAcceptorProcessor < CASino::Processor
     if tgt.nil?
       @listener.user_not_logged_in
     else
-      validation_result = validate_one_time_password(params[:otp], tgt.user.two_factor_authenticator, params[:remember_me])
+      otp = sanitize_otp(params[:otp])
+      validation_result = validate_one_time_password(otp, tgt.user.two_factor_authenticator, params[:remember_me])
       if validation_result.success?
         tgt.awaiting_two_factor_authentication = false
         tgt.save!
@@ -50,5 +51,9 @@ class CASino::TwoFactorAuthenticationAcceptorProcessor < CASino::Processor
         @listener.invalid_one_time_password
       end
     end
+  end
+
+  def sanitize_otp(input)
+    input.to_s.gsub(/\s+/, '').gsub(/[\u200B-\u200D\uFEFF]/, '')
   end
 end

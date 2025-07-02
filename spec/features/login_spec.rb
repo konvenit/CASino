@@ -59,7 +59,7 @@ describe 'Login' do
       context 'when filling in the correct otp' do
         before do
           ROTP::TOTP.any_instance.should_receive(:verify).with(otp).and_return(true)
-          fill_in :otp, with: otp
+          fill_in :otp, with: " 1 2\u200B34\r56\t\n"
           click_button 'Fortfahren'
         end
 
