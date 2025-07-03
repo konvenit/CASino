@@ -56,10 +56,22 @@ describe 'Login' do
       end
 
 
-      context 'when filling in the correct otp' do
+      context 'when filling in the correct clean otp' do
         before do
           ROTP::TOTP.any_instance.should_receive(:verify).with(otp).and_return(true)
           fill_in :otp, with: otp
+          click_button 'Fortfahren'
+        end
+
+        it { should_not have_button('Login') }
+        it { should_not have_button('Fortfahren') }
+        its(:current_path) { should == sessions_path }
+      end
+
+      context 'when filling in the correct otp with whitespaces' do
+        before do
+          ROTP::TOTP.any_instance.should_receive(:verify).with(otp).and_return(true)
+          fill_in :otp, with: " \u200D #{otp.chars.join(' ')} \uFEFF "
           click_button 'Fortfahren'
         end
 
