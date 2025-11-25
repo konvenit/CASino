@@ -35,7 +35,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'timecop', '>= 0.9.10'
   s.add_development_dependency 'pry-nav'
 
-  s.add_runtime_dependency 'rails', '>= 6.1'
+  s.add_runtime_dependency 'rails', '~> 8.0.2'
   s.add_runtime_dependency 'http_accept_language', '>= 2.0.0.pre'
   s.add_runtime_dependency 'addressable', '>= 2.3'
   s.add_runtime_dependency 'terminal-table', '>= 1.4'
