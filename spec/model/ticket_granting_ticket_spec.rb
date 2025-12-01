@@ -134,7 +134,7 @@ describe CASino::TicketGrantingTicket do
 
       context 'with an expired ticket' do
         before(:each) do
-          ticket_granting_ticket.created_at = 10.minutes.ago
+          ticket_granting_ticket.created_at = 33.minutes.ago
           ticket_granting_ticket.save!
         end
 
@@ -192,7 +192,7 @@ describe CASino::TicketGrantingTicket do
     end
 
     it 'does delete expired ticket-granting tickets with pending two-factor authentication' do
-      ticket_granting_ticket.created_at = 20.minutes.ago
+      ticket_granting_ticket.created_at = 33.minutes.ago
       ticket_granting_ticket.awaiting_two_factor_authentication = true
       ticket_granting_ticket.save!
       expect do
