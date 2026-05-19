@@ -22,28 +22,34 @@ class CASino::ApplicationController < ::ApplicationController
     @processor = CASino.const_get(:"#{processor_name}Processor").new(listener)
   end
 
-  def available_locale
-    ['de','en']
-  end
-
   def set_locale
-    locale = if params[:service] and params[:service].match(/.*[?&]locale=([^&]+)(&|$)/)
-               result = params[:service].match(/.*[?&]locale=([^&]+)(&|$)/)
-               result[1]
-             elsif request.env['HTTP_ACCEPT_LANGUAGE']
-               Rails.env.test? ? "de" : http_accept_language.preferred_language_from(I18n.available_locales)
-             end
-    I18n.locale = available_locale.include?(locale) ? locale : I18n.default_locale
+    detected = locale_from_service_param || locale_from_accept_language_header
+    I18n.locale = supported_locale(detected) || I18n.default_locale
   end
 
-  def extract_locale_from_accept_language_header
-    if request.env['HTTP_ACCEPT_LANGUAGE']
-      http_accept_language.preferred_language_from(I18n.available_locales)
-    end
+  def locale_from_service_param
+    return nil unless params[:service]
+
+    match = params[:service].match(/[?&]locale=([^&]+)(&|$)/)
+    match && match[1]
+  end
+
+  def locale_from_accept_language_header
+    return nil unless request.env["HTTP_ACCEPT_LANGUAGE"]
+    return "de" if Rails.env.test?
+
+    http_accept_language.compatible_language_from(I18n.available_locales)
+  end
+
+  def supported_locale(locale)
+    return nil if locale.blank?
+
+    base = locale.to_s.split(/[-_]/).first.downcase.to_sym
+    I18n.available_locales.include?(base) ? base : nil
   end
 
   def http_accept_language
-    HttpAcceptLanguage::Parser.new request.env['HTTP_ACCEPT_LANGUAGE']
+    HttpAcceptLanguage::Parser.new(request.env["HTTP_ACCEPT_LANGUAGE"])
   end
 
   def missing_template(exception)
