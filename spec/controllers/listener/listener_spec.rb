@@ -14,7 +14,7 @@ describe CASino::Listener do
       before { allow(controller).to receive(:password_expiration_enabled?).and_return true }
 
       it 'should redirect to password update' do
-        expect(controller).to receive(:redirect_to).with("/password_updates/new?expires=&service=service&tgt=TGT-123")
+        expect(controller).to receive(:redirect_to).with("/password_updates/new?expires&service=service&tgt=TGT-123")
         listener.password_expired(url, ticket_granting_ticket)
       end
 
