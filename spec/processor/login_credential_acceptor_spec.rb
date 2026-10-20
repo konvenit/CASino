@@ -97,6 +97,19 @@ describe CASino::LoginCredentialAcceptorProcessor do
             processor.process(login_data)
           end
 
+          it 'emails the code with the login_2fa_auth notification' do
+            allow(listener).to receive(:two_factor_authentication_pending)
+            expect(Notifikator).to receive(:generate).with(:login_2fa_auth, login_otp: anything)
+            processor.process(login_data)
+          end
+
+          it 'emails the code with the notification type the listener asks for' do
+            allow(listener).to receive(:two_factor_authentication_pending)
+            allow(listener).to receive(:otp_notification_type).and_return :partner_network_login_2fa_auth
+            expect(Notifikator).to receive(:generate).with(:partner_network_login_2fa_auth, login_otp: anything)
+            processor.process(login_data)
+          end
+
           it 'should not call two_factor_authentication_pending when disable_two_factor_auth is true' do
             allow(listener).to receive(:disable_two_factor_auth?).and_return true
             expect(listener).to_not receive(:two_factor_authentication_pending)

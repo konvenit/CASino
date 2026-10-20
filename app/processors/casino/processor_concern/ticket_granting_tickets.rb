@@ -81,7 +81,8 @@ module CASino
 
         otp_value = totp.now
         login_otp_proxy = Proxies::LoginOTP.new(otp: otp_value, person_id: ticket_granting_ticket.user.extra_attributes[:person_id])
-        Notifikator.generate :login_2fa_auth, login_otp: login_otp_proxy
+        notification_type = @listener.respond_to?(:otp_notification_type) ? @listener.otp_notification_type : :login_2fa_auth
+        Notifikator.generate notification_type, login_otp: login_otp_proxy
       end
     end
   end
